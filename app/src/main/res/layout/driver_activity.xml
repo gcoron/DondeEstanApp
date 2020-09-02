@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_orange_light">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_app" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="32dp"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeMinTextSize="16sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="Complete los siguientes campos:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <LinearLayout
+        android:id="@+id/linearlayout1"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/textView1"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Nombre: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout2"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout1"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Apellido: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout3"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout2"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Usuario: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout4"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout3"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Contraseña: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout5"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout4"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Email: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout6"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout5"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Empresa: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout7"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout6"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Patente: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout8"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout7"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="Matricula: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/button_rounded_border"
+        android:text="Cancelar"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout8"
+        app:layout_constraintEnd_toStartOf="@+id/button2"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="727dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_rounded"
+        android:text="Crear cuenta"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button1"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="727dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
