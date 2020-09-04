@@ -27,7 +27,7 @@
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
         android:gravity="center"
-        android:text="Crear chofer:"
+        android:text="Crear notificación:"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -51,7 +51,7 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Nombre: " />
+            android:text="Título: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName1"
@@ -79,7 +79,7 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Clave privacidad: " />
+            android:text="Descripción: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName3"
@@ -91,8 +91,8 @@
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/button_rounded"
@@ -103,11 +103,11 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/button_rounded"
-        android:text="Crear chofer"
+        android:text="Crear Notificación"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button1"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout2"

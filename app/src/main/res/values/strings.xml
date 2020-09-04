@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">DondeEstanApp</string>
+    <string name="title_activity_maps">Map</string>
+    <string-array name="menu_chofer">
+        <item>Notificaciones</item>
+        <item>Mensajes</item>
+    </string-array>
+    <string-array name="menu_padres">
+        <item>Chofer</item>
+        <item>Notificaciones</item>
+        <item>Mensajes</item>
+    </string-array>
+    <string-array name="listview_message">
+        <item>Mensaje 1</item>
+        <item>Mensaje 2</item>
+        <item>Mensaje 3</item>
+        <item>Mensaje 4</item>
+        <item>Mensaje 5</item>
+    </string-array>
+    <string-array name="listview_notifications">
+        <item>Notificación 1</item>
+        <item>Notificación 2</item>
+        <item>Notificación 3</item>
+        <item>Notificación 4</item>
+        <item>Notificación 5</item>
+    </string-array>
 </resources>
