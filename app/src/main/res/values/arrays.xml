@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_list_item_array">Chofer,Notificaciones,Mensajes</string-array>
+    <string-array name="listview_item_array">Mensaje1,Mensaje2,Mensaje3,Mensaje4,Mensaje5</string-array>
+</resources>
