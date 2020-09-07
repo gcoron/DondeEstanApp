@@ -51,7 +51,7 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Nombre: " />
+            android:text="Calle: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName1"
@@ -79,7 +79,7 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Apellido: " />
+            android:text="Número: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName3"
@@ -107,7 +107,7 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Usuario: " />
+            android:text="Piso: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName4"
@@ -131,11 +131,11 @@
             android:layout_width="110dp"
             android:layout_height="match_parent"
             android:autoSizeMaxTextSize="20sp"
-            android:autoSizeMinTextSize="16sp"
+            android:autoSizeMinTextSize="14sp"
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Contraseña: " />
+            android:text="Dpto: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName5"
@@ -163,7 +163,7 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Email: " />
+            android:text="Ciudad: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName6"
@@ -191,10 +191,38 @@
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:gravity="right"
-            android:text="Nombre Hijo/a: " />
+            android:text="Provincia: " />
 
         <EditText
             android:id="@+id/editTextTextPersonName7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout7"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout6"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="right"
+            android:text="País: " />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -208,7 +236,7 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/button_rounded_border"
         android:text="Cancelar"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout6"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout7"
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="727dp" />
@@ -218,8 +246,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_rounded"
-        android:text="Crear cuenta"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout6"
+        android:text="Crear dirección"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button1"
         tools:ignore="MissingConstraints"
