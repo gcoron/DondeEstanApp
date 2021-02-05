@@ -241,7 +241,7 @@ public class ObserverMainActivity extends AppCompatActivity implements OnMapRead
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_toolbar, menu);
+        inflater.inflate(R.menu.bottom_navigation, menu);
 
         return true;
     }

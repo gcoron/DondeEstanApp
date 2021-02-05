@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_notification"
+        android:icon="@drawable/ic_notifications"
+        android:title="Administrar Notificaciones">
+        <menu xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <item
+                android:id="@+id/menu_notif_crear_dir"
+                android:title="Crear Notificación"/>
+
+            <item android:id="@+id/menu_notif_modificar_dir"
+                android:title="Modificar Notificación"/>
+
+            <item
+                android:id="@+id/menu_notif_eliminar_dir"
+                android:title="Eliminar Notificación"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/menu_account"
+        android:icon="@drawable/ic_account"
+        android:title="Administrar Cuenta">
+        <menu xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <item
+                android:id="@+id/menu_my_account"
+                android:title="Mi cuenta"/>
+            <item
+                android:id="@+id/menu_account_close"
+                android:title="Cerrar sesión"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_info"
+        android:icon="@drawable/ic_info"
+        android:title="Acerca de"/>
+
+</menu>
