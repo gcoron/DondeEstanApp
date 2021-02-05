@@ -1,41 +1,46 @@
 package com.dondeestanapp.ui;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.dondeestanapp.R;
+import com.dondeestanapp.ui.fragments.AccountFragment;
+import com.dondeestanapp.ui.fragments.InformationFragment;
+import com.dondeestanapp.ui.fragments.MapsFragment;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-public class ObserveeMainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ObserveeMainActivity extends FragmentActivity {
 
     private static final int LOCATION_REQUEST_CODE = 101;
     private GoogleMap mMap;
@@ -55,78 +60,50 @@ public class ObserveeMainActivity extends AppCompatActivity implements OnMapRead
     private long firstClickTime;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private ActionBar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_observee);
 
-        myLocation_btn = findViewById(R.id.floating_action_button_my_location);
-        add_btn = findViewById(R.id.floating_action_button_add);
-        message_btn = findViewById(R.id.floating_action_button_message);
-        notification_btn = findViewById(R.id.floating_action_button_notification);
+        BottomNavigationView navigation = findViewById(R.id.navigationViewObservee);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open_anim);
-        rotateClose = AnimationUtils.loadAnimation(this, R.anim.rotate_close_anim);
-        fromBottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom_anim);
-        toBottom = AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim);
+        loadFragment(new MapsFragment());
 
-        //Toolbar toolbar = findViewById(R.id.my_toolbar);
-        //setSupportActionBar(toolbar);
+    }
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_maps:
+                    //toolbar.setTitle("Mapa");
+                    loadFragment(new MapsFragment());
+                    return true;
+                case R.id.menu_account:
+                    //toolbar.setTitle("Mi Cuenta");
+                    loadFragment(new AccountFragment());
+                    return true;
+                case R.id.action_info:
+                    //toolbar.setTitle("Acerca de");
+                    loadFragment(new InformationFragment());
+                    return true;
 
-        myLocation_btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View view) {
-
-                if (ActivityCompat.checkSelfPermission(ObserveeMainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ObserveeMainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(ObserveeMainActivity.this);
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(ObserveeMainActivity.this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    // Logic to handle location object
-                                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                                    float zoom = 15;
-                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-                                }
-                            }
-                        });
             }
-        });
+            return false;
+        }
+    };
 
-        add_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onAddButtonClicked();
-            }
-        });
 
-        message_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ObserveeMainActivity.this, MessagesListActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        notification_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ObserveeMainActivity.this, NotificationsListActivity.class);
-                startActivity(intent);
-            }
-        });
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void onAddButtonClicked() {
@@ -176,59 +153,9 @@ public class ObserveeMainActivity extends AppCompatActivity implements OnMapRead
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        if (mMap != null) {
-            int permission = ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION);
-
-            if (permission == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            } else {
-                requestPermission(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        LOCATION_REQUEST_CODE);
-            }
-        }
-    }
-
-    protected void requestPermission(String permissionType, int requestCode) {
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{permissionType}, requestCode
-        );
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-
-        switch (requestCode) {
-            case LOCATION_REQUEST_CODE: {
-
-                if (grantResults.length == 0
-                        || grantResults[0] !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this,
-                            "Unable to show location - permission required",
-                            Toast.LENGTH_LONG).show();
-                } else {
-
-                    SupportMapFragment mapFragment =
-                            (SupportMapFragment) getSupportFragmentManager()
-                                    .findFragmentById(R.id.map);
-                    mapFragment.getMapAsync(this);
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_toolbar_observee, menu);
+        inflater.inflate(R.menu.bottom_navigation, menu);
 
         return true;
     }

@@ -1,83 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ObserveeMainActivity">
+    tools:context=".ui.ObserveeMainActivity"
+    android:orientation="vertical">
 
-    <fragment
-        android:id="@+id/map"
-        class="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="568dp"
+        android:layout_height="776dp"
+        android:layout_above="@+id/navigationViewObservee"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigationViewObservee"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.ObserveeMainActivity"
-        tools:layout_editor_absoluteX="117dp"
-        tools:layout_editor_absoluteY="40dp" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_action_button_notification"
-        android:layout_width="56dp"
-        android:layout_height="316dp"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="invisible"
-        android:tint="@color/colorPrimary"
-        app:backgroundTint="@color/colorSecondary"
-        app:layout_constraintBottom_toTopOf="@+id/floating_action_button_message"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_notifications"
-        tools:ignore="ContentDescription,MissingConstraints,VectorDrawableCompat" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_action_button_message"
-        android:layout_width="56dp"
-        android:layout_height="316dp"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="invisible"
-        android:tint="@color/colorPrimary"
-        app:backgroundTint="@color/colorSecondary"
-        app:layout_constraintBottom_toTopOf="@+id/floating_action_button_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_message"
-        tools:ignore="VectorDrawableCompat" />
-    
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_action_button_add"
-        android:layout_width="56dp"
-        android:layout_height="316dp"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:tint="@color/colorSecondary"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/floating_action_button_my_location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add"
-        tools:ignore="MissingConstraints,VectorDrawableCompat" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_action_button_my_location"
-        android:layout_width="56dp"
-        android:layout_height="316dp"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:tint="@color/colorSecondary"
-        app:backgroundTint="@color/colorPrimary"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        app:itemBackground="?selectableItemBackgroundBorderless"
+        app:itemHorizontalTranslationEnabled="true"
+        app:itemIconTint="@drawable/nav_item_color_state"
+        app:itemTextColor="@drawable/nav_item_color_state"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_my_location"
-        tools:ignore="MissingConstraints,VectorDrawableCompat" />
+        app:menu="@menu/bottom_navigation"
+        tools:ignore="MissingConstraints" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
