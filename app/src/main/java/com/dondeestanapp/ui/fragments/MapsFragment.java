@@ -3,7 +3,6 @@ package com.dondeestanapp.ui.fragments;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -21,25 +20,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.dondeestanapp.R;
+import com.dondeestanapp.ui.DriverActivity;
 import com.dondeestanapp.ui.MessagesListActivity;
 import com.dondeestanapp.ui.NotificationsListActivity;
-import com.dondeestanapp.ui.ObserveeMainActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
@@ -51,13 +44,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     private static final int LOCATION_REQUEST_CODE = 101;
     private GoogleMap mMap;
-    MapView mMapView;
     View mapsView;
 
     FloatingActionButton myLocation_btn;
     FloatingActionButton add_btn;
     FloatingActionButton message_btn;
     FloatingActionButton notification_btn;
+    FloatingActionButton driver_btn;
 
     Animation rotateOpen;
     Animation rotateClose;
@@ -65,11 +58,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     Animation toBottom;
 
     Boolean clicked = false;
-    private static final int INTERVAL = 2000; //2 seconds to exit
-    private long firstClickTime;
 
     private FusedLocationProviderClient fusedLocationClient;
-    private ActionBar toolbar;
+
+    private Integer userId;
+    private String userType;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -92,34 +85,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
                              @Nullable Bundle savedInstanceState) {
         mapsView = inflater.inflate(R.layout.fragment_maps, container, false);
 
+        userId = getArguments().getInt("userId");
+        userType = getArguments().getString("userType");
+
         myLocation_btn = mapsView.findViewById(R.id.floating_action_button_my_location);
         add_btn = mapsView.findViewById(R.id.floating_action_button_add);
         message_btn = mapsView.findViewById(R.id.floating_action_button_message);
         notification_btn = mapsView.findViewById(R.id.floating_action_button_notification);
+        driver_btn = mapsView.findViewById(R.id.floating_action_button_driver);
 
         rotateOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_open_anim);
         rotateClose = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_close_anim);
         fromBottom = AnimationUtils.loadAnimation(getActivity(), R.anim.from_bottom_anim);
         toBottom = AnimationUtils.loadAnimation(getActivity(), R.anim.to_bottom_anim);
-/*
-        mMapView = mapsView.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); //needed to get the map to display immediately
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-*/
         try{
             SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(MapsFragment.this);
         }catch (Exception e){
             e.printStackTrace();
         }
-        //mMapView.getMapAsync(MapsFragment.this);
 
         myLocation_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -151,6 +136,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
                 startActivity(intent);
             }
         });
+
+        driver_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DriverActivity.class);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        });
+
         return mapsView;
     }
 
@@ -177,37 +172,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         super.onDestroyView();
     }
 
-/*
-    @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mMapView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mMapView.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
-    }
-*/
     private void moveCameraToLastLocation(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -261,9 +225,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         if (!clicked) {
             message_btn.setClickable(true);
             notification_btn.setClickable(true);
+            if (userType.equals("observer")) {
+                driver_btn.setClickable(true);
+            }
         } else {
             message_btn.setClickable(false);
             notification_btn.setClickable(false);
+            if (userType.equals("observer")) {
+                driver_btn.setClickable(false);
+            }
         }
     }
 
@@ -272,9 +242,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         if (!clicked) {
             message_btn.setVisibility(View.VISIBLE);
             notification_btn.setVisibility(View.VISIBLE);
+            if (userType.equals("observer")) {
+                driver_btn.setVisibility(View.VISIBLE);
+            }
         } else {
             message_btn.setVisibility(View.INVISIBLE);
             notification_btn.setVisibility(View.INVISIBLE);
+            if (userType.equals("observer")) {
+                driver_btn.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -283,10 +259,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             message_btn.startAnimation(fromBottom);
             notification_btn.startAnimation(fromBottom);
             add_btn.startAnimation(rotateOpen);
+            if (userType.equals("observer")) {
+                driver_btn.startAnimation(fromBottom);
+            }
         } else {
             message_btn.startAnimation(toBottom);
             notification_btn.startAnimation(toBottom);
             add_btn.startAnimation(rotateClose);
+            if (userType.equals("observer")) {
+                driver_btn.startAnimation(toBottom);
+            }
         }
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ObserveeMainActivity">
+    tools:context=".ui.MainActivity">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -12,6 +12,27 @@
         android:layout_height="match_parent"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_action_button_driver"
+        android:layout_width="56dp"
+        android:layout_height="316dp"
+        android:layout_above="@+id/floating_action_button_notification"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:tint="@color/colorPrimary"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorSecondary"
+        app:layout_constraintBottom_toTopOf="@+id/floating_action_button_notification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_drive"
+        tools:ignore="MissingConstraints,VectorDrawableCompat" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floating_action_button_notification"

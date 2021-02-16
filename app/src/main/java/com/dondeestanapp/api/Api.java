@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiClient {
+public class Api {
 
     private static Retrofit getRetrofit() {
 
@@ -16,16 +16,28 @@ public class ApiClient {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://dondeestanws-env.eba-8mwa2gm6.sa-east-1.elasticbeanstalk.com/")
+                .baseUrl("http://dondeestanapp-ws.us-east-2.elasticbeanstalk.com/")
                 .client(okHttpClient)
                 .build();
 
         return retrofit;
     }
 
-    public static UserService getUserService() {
-        UserService userService = getRetrofit().create(UserService.class);
+    public static LoginRegisterService getUserService() {
+        LoginRegisterService loginRegisterService = getRetrofit().create(LoginRegisterService.class);
 
-        return userService;
+        return loginRegisterService;
+    }
+
+    public static DriverService getDriverService() {
+        DriverService driverService = getRetrofit().create(DriverService.class);
+
+        return driverService;
+    }
+
+    public static DriverService setDriverService() {
+        DriverService setDriverService = getRetrofit().create(DriverService.class);
+
+        return setDriverService;
     }
 }
