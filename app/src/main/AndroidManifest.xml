@@ -34,28 +34,34 @@
             android:value="AIzaSyDxrpW9VZBHrEohJ3KkUfKTgaRk_7-vozA" />
 
         <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/NoActionBar" />
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name=".ui.ObserveeMainActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
         <activity
-            android:name=".ui.LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.ObserverMainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MessagesListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.NotificationsListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.UserTypeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.CreateUserObserveeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.CreateObserverUserActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.DriverActivity"
             android:screenOrientation="portrait" />
     </application>
 

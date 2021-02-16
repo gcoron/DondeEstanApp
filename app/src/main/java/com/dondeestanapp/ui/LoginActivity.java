@@ -13,8 +13,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.ApiClient;
-import com.dondeestanapp.api.model.LoginUser;
+import com.dondeestanapp.api.Api;
+import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
 import com.dondeestanapp.api.model.ServerResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     Button btn_login;
     Button btn_register;
     RadioButton rb_session;
+
+    private static final int INTERVAL = 2000; //2 segundos para salir
+    private long firstClickTime;
 
     private Boolean isActivateRadioButton;
     private static final String STRING_PREFERENCES = "dondeestanapp.ui.LoginActivity";
@@ -83,6 +86,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, UserTypeActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void saveButtonState() {
@@ -110,31 +121,35 @@ public class LoginActivity extends AppCompatActivity {
 
         Call<ServerResponse> loginResponseCall;
         if (state) {
-            loginResponseCall = ApiClient.getUserService().userLogin(user, pass);
+            loginResponseCall = Api.getUserService().userLogin(user, pass);
         } else {
-            loginResponseCall = ApiClient.getUserService().userLogin(et_username.getText().toString(), et_password.getText().toString());
+            loginResponseCall = Api.getUserService().userLogin(et_username.getText().toString(), et_password.getText().toString());
         }
         loginResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.isSuccessful()) {
-                    ServerResponse<LoginUser> userServerResponse = new ServerResponse<LoginUser>(response.body().getCode(), response.body().getData(), response.body().getPaginator(), response.body().getStatus());
+                    ServerResponse<ResponseLoginRegisterDTO> userServerResponse = new ServerResponse<ResponseLoginRegisterDTO>(response.body().getCode(), response.body().getData(), response.body().getPaginator(), response.body().getStatus());
                     //ServerResponse userServerResponse = response.body();
                     if (userServerResponse.getCode() == 200){
                         Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_LONG).show();
-                        List<LoginUser> userList = userServerResponse.getData();
+                        List<ResponseLoginRegisterDTO> userList = userServerResponse.getData();
                         Gson g = new Gson();
-                        Type listType = new TypeToken<ArrayList<LoginUser>>(){}.getType();
-                        ArrayList<LoginUser> userLogin = g.fromJson(g.toJson(userList), listType);
+                        Type listType = new TypeToken<ArrayList<ResponseLoginRegisterDTO>>(){}.getType();
+                        ArrayList<ResponseLoginRegisterDTO> userLogin = g.fromJson(g.toJson(userList), listType);
                         String s = userLogin.get(0).getUserType();
-
+                        Integer userId = userLogin.get(0).getUserId();
                         saveButtonState();
                         if ("observee".equals(s)){
-                            Intent intent = new Intent(LoginActivity.this, ObserveeMainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("userId", userId);
+                            intent.putExtra("userType", "observee");
                             startActivity(intent);
                             finish();
                         } else if ("observer".equals(s)) {
-                            Intent intent = new Intent(LoginActivity.this, ObserverMainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("userId", userId);
+                            intent.putExtra("userType", "observer");
                             startActivity(intent);
                             finish();
                         } else {
@@ -154,5 +169,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (firstClickTime + INTERVAL > System.currentTimeMillis()){
+            super.onBackPressed();
+            finishAffinity();
+        }else {
+            Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
+        }
+        firstClickTime = System.currentTimeMillis();
     }
 }
