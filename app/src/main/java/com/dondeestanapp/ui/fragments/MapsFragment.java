@@ -20,9 +20,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.dondeestanapp.R;
+import com.dondeestanapp.api.Api;
+import com.dondeestanapp.api.model.ResponseAddressDTO;
+import com.dondeestanapp.api.model.ResponseDriverDTO;
+import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
+import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.AddressActivity;
+import com.dondeestanapp.ui.AddressListActivity;
 import com.dondeestanapp.ui.DriverActivity;
+import com.dondeestanapp.ui.MainActivity;
 import com.dondeestanapp.ui.MessagesListActivity;
 import com.dondeestanapp.ui.NotificationsListActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,6 +43,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback{
@@ -51,6 +70,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
     FloatingActionButton message_btn;
     FloatingActionButton notification_btn;
     FloatingActionButton driver_btn;
+    FloatingActionButton address_btn;
 
     Animation rotateOpen;
     Animation rotateClose;
@@ -93,6 +113,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
         message_btn = mapsView.findViewById(R.id.floating_action_button_message);
         notification_btn = mapsView.findViewById(R.id.floating_action_button_notification);
         driver_btn = mapsView.findViewById(R.id.floating_action_button_driver);
+        address_btn = mapsView.findViewById(R.id.floating_action_button_address);
 
         rotateOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_open_anim);
         rotateClose = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_close_anim);
@@ -142,6 +163,65 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), DriverActivity.class);
                 intent.putExtra("userId", userId);
+                intent.putExtra("userType", userType);
+                startActivity(intent);
+            }
+        });
+
+        address_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Call<ServerResponse> createAddressResponseCall;
+
+                createAddressResponseCall = Api.addressService().getAddressesById(userId);
+
+                createAddressResponseCall.enqueue(new Callback<ServerResponse>() {
+                    @Override
+                    public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                        if (response.isSuccessful()) {
+                            ServerResponse<ResponseAddressDTO> userServerResponse =
+                                    new ServerResponse<ResponseAddressDTO>(
+                                            response.body().getCode(), response.body().getData(),
+                                            response.body().getPaginator(), response.body().getStatus());
+
+                            List<ResponseAddressDTO> addressList = userServerResponse.getData();
+                            Gson g = new Gson();
+                            Type listType = new TypeToken<ArrayList<ResponseAddressDTO>>(){}.getType();
+                            ArrayList<ResponseAddressDTO> observerUserAddress = g.fromJson(g.toJson(addressList), listType);
+
+                            if (userServerResponse.getCode() == 200 && observerUserAddress.size() == 0){
+                                Intent intent = new Intent(getActivity(), AddressActivity.class);
+                                intent.putExtra("userId", userId);
+                                intent.putExtra("userType", userType);
+                                startActivity(intent);
+
+                            } else if (userServerResponse.getCode() == 200 && observerUserAddress.size() > 0){
+                                Intent intent = new Intent(getActivity(), AddressListActivity.class);
+                                intent.putExtra("userId", userId);
+                                intent.putExtra("userType", userType);
+                                intent.putExtra("addressCount", observerUserAddress.size());
+                                intent.putExtra("addresses", observerUserAddress);
+
+                                startActivity(intent);
+
+                            }else if (userServerResponse.getCode() == 500){
+                                Toast.makeText(getActivity(), "Incorrect userId", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "Address request failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServerResponse> call, Throwable t) {
+                        Toast.makeText(getActivity(), "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                Intent intent = new Intent(getActivity(), AddressActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });
@@ -227,12 +307,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             notification_btn.setClickable(true);
             if (userType.equals("observer")) {
                 driver_btn.setClickable(true);
+                address_btn.setClickable(true);
             }
         } else {
             message_btn.setClickable(false);
             notification_btn.setClickable(false);
             if (userType.equals("observer")) {
                 driver_btn.setClickable(false);
+                address_btn.setClickable(false);
             }
         }
     }
@@ -244,12 +326,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             notification_btn.setVisibility(View.VISIBLE);
             if (userType.equals("observer")) {
                 driver_btn.setVisibility(View.VISIBLE);
+                address_btn.setVisibility(View.VISIBLE);
             }
         } else {
             message_btn.setVisibility(View.INVISIBLE);
             notification_btn.setVisibility(View.INVISIBLE);
             if (userType.equals("observer")) {
                 driver_btn.setVisibility(View.INVISIBLE);
+                address_btn.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -261,6 +345,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             add_btn.startAnimation(rotateOpen);
             if (userType.equals("observer")) {
                 driver_btn.startAnimation(fromBottom);
+                address_btn.startAnimation(fromBottom);
             }
         } else {
             message_btn.startAnimation(toBottom);
@@ -268,6 +353,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback{
             add_btn.startAnimation(rotateClose);
             if (userType.equals("observer")) {
                 driver_btn.startAnimation(toBottom);
+                address_btn.startAnimation(toBottom);
             }
         }
     }

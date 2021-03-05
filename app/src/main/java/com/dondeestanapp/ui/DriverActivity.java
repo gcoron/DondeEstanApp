@@ -31,7 +31,8 @@ import retrofit2.Response;
 
 public class DriverActivity extends AppCompatActivity {
 
-    Integer userId;
+    private Integer userId;
+    private String userType;
 
     EditText et_name;
     EditText et_lastName;
@@ -43,14 +44,13 @@ public class DriverActivity extends AppCompatActivity {
     Button btn_cancel_driver;
     Button btn_create_driver;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_driver);
 
         userId = getIntent().getIntExtra("userId", 0);
+        userType = getIntent().getStringExtra("userType");
 
         et_name = findViewById(R.id.et_name);
         et_lastName = findViewById(R.id.et_last_name);
@@ -72,7 +72,7 @@ public class DriverActivity extends AppCompatActivity {
 
         Call<ServerResponse> registerResponseCall;
 
-        registerResponseCall = Api.getDriverService().getDriverById(userId);
+        registerResponseCall = Api.driverService().getDriverById(userId);
 
         registerResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
@@ -119,6 +119,7 @@ public class DriverActivity extends AppCompatActivity {
                     Toast.makeText(DriverActivity.this, "Register failed", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(DriverActivity.this, LoginActivity.class);
                     intent.putExtra("userId", userId);
+                    intent.putExtra("userType", userType);
                     startActivity(intent);
                     finish();
                 }
@@ -135,6 +136,7 @@ public class DriverActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(DriverActivity.this, MainActivity.class);
                 intent.putExtra("userId", userId);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
             }
@@ -148,44 +150,20 @@ public class DriverActivity extends AppCompatActivity {
                 boolean isAllFieldsOk = true;
                 if (btn_create_driver.getText().equals("Crear chofer")){
 
-                    if (!isFilledEditText(et_name)) {
-                        et_name.getBackground().setColorFilter(Color.RED,
-                                PorterDuff.Mode.SRC_ATOP);
-                        isAllFieldsOk = false;
-                    }
-                    if (!isFilledEditText(et_lastName)) {
-                        et_lastName.getBackground().setColorFilter(Color.RED,
-                                PorterDuff.Mode.SRC_ATOP);
-                        isAllFieldsOk = false;
-                    }
                     if (!isFilledEditText(et_privacy_key)) {
                         et_privacy_key.getBackground().setColorFilter(Color.RED,
                                 PorterDuff.Mode.SRC_ATOP);
                         isAllFieldsOk = false;
                     }
-                    if (!isFilledEditText(et_company)) {
-                        et_company.getBackground().setColorFilter(Color.RED,
-                                PorterDuff.Mode.SRC_ATOP);
-                        isAllFieldsOk = false;
-                    }
-                    if (!isFilledEditText(et_license_plate)) {
-                        et_license_plate.getBackground().setColorFilter(Color.RED,
-                                PorterDuff.Mode.SRC_ATOP);
-                        isAllFieldsOk = false;
-                    }
-                    if (!isFilledEditText(et_car_registration)) {
-                        et_car_registration.getBackground().setColorFilter(Color.RED,
-                                PorterDuff.Mode.SRC_ATOP);
-                        isAllFieldsOk = false;
-                    }
 
                     if (!isAllFieldsOk) {
-                        Toast.makeText(DriverActivity.this, "Complete todos los campos",
+                        Toast.makeText(DriverActivity.this, "Ingrese Clave de Privacidad",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         Call<ServerResponse> createDriverResponseCall;
 
-                        createDriverResponseCall = Api.setDriverService().setDriverInObserverUser(userId, et_privacy_key.getText().toString());
+                        createDriverResponseCall = Api.driverService().setDriverInObserverUser(
+                                userId, et_privacy_key.getText().toString().toLowerCase().trim());
 
                         createDriverResponseCall.enqueue(new Callback<ServerResponse>() {
                             @Override
@@ -198,14 +176,21 @@ public class DriverActivity extends AppCompatActivity {
 
                                     if (userServerResponse.getCode() == 200){
                                         Toast.makeText(DriverActivity.this, "Chofer creado correctamente", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(DriverActivity.this, MainActivity.class);
+                                        intent.putExtra("userId", userId);
+                                        intent.putExtra("userType", userType);
+                                        startActivity(intent);
+                                        finish();
 
                                     } else if (userServerResponse.getCode() == 500){
                                         Toast.makeText(DriverActivity.this, "Incorrect fields", Toast.LENGTH_LONG).show();
                                     }
+
                                 } else {
                                     Toast.makeText(DriverActivity.this, "Register failed", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(DriverActivity.this, LoginActivity.class);
+                                    Intent intent = new Intent(DriverActivity.this, MainActivity.class);
                                     intent.putExtra("userId", userId);
+                                    intent.putExtra("userType", userType);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -221,7 +206,7 @@ public class DriverActivity extends AppCompatActivity {
                 } else if (btn_create_driver.getText().equals("Eliminar")){
                     Call<ServerResponse> deleteDriverResponseCall;
 
-                    deleteDriverResponseCall = Api.setDriverService().setDriverInObserverUser(userId, "user1test1.12345678");
+                    deleteDriverResponseCall = Api.driverService().setDriverInObserverUser(userId, "user1test1.12345678");
 
                     deleteDriverResponseCall.enqueue(new Callback<ServerResponse>() {
                         @Override
@@ -236,12 +221,13 @@ public class DriverActivity extends AppCompatActivity {
                                     Toast.makeText(DriverActivity.this, "Chofer eliminado correctamente", Toast.LENGTH_LONG).show();
 
                                 } else if (userServerResponse.getCode() == 500){
-                                    Toast.makeText(DriverActivity.this, "Incorrect fields", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(DriverActivity.this, "Clave de privacidad incorrecta", Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(DriverActivity.this, "Register failed", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(DriverActivity.this, LoginActivity.class);
+                                Intent intent = new Intent(DriverActivity.this, MainActivity.class);
                                 intent.putExtra("userId", userId);
+                                intent.putExtra("userType", userType);
                                 startActivity(intent);
                                 finish();
                             }
@@ -254,6 +240,7 @@ public class DriverActivity extends AppCompatActivity {
                     });
                     Intent intent = new Intent(DriverActivity.this, MainActivity.class);
                     intent.putExtra("userId", userId);
+                    intent.putExtra("userType", userType);
                     startActivity(intent);
                 }
             }
@@ -265,4 +252,13 @@ public class DriverActivity extends AppCompatActivity {
         return (!et.getText().toString().equals(""));
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(DriverActivity.this, MainActivity.class);
+        intent.putExtra("userId", userId);
+        intent.putExtra("userType", userType);
+        startActivity(intent);
+        finish();
+    }
 }

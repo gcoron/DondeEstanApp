@@ -24,6 +24,10 @@
         <item>Notificación 4</item>
         <item>Notificación 5</item>
     </string-array>
+    <string-array name="listview_address">
+        <item>Dirección 1</item>
+        <item>Dirección 2</item>
+    </string-array>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
