@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (TextUtils.isEmpty((et_username.getText().toString()))) {
                     Toast.makeText(LoginActivity.this, "Password required", Toast.LENGTH_LONG).show();
                 } else {
-                    login(getButtonState(), getButtonStateUsername(), getButtonStatePassword());
+                    login(getButtonState(), getButtonStateUsername().toLowerCase().trim(), getButtonStatePassword().toLowerCase().trim());
                 }
             }
         });
@@ -99,8 +99,8 @@ public class LoginActivity extends AppCompatActivity {
     public void saveButtonState() {
         SharedPreferences preferences = getSharedPreferences(STRING_PREFERENCES, MODE_PRIVATE);
         preferences.edit().putBoolean(PREFERENCE_SESSION_BUTTON_STATE, rb_session.isChecked()).apply();
-        preferences.edit().putString(PREFERENCE_SESSION_USERNAME, et_username.getText().toString()).apply();
-        preferences.edit().putString(PREFERENCE_SESSION_PASSWORD, et_password.getText().toString()).apply();
+        preferences.edit().putString(PREFERENCE_SESSION_USERNAME, et_username.getText().toString().toLowerCase().trim()).apply();
+        preferences.edit().putString(PREFERENCE_SESSION_PASSWORD, et_password.getText().toString().toLowerCase().trim()).apply();
     }
 
     public Boolean getButtonState() {
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         if (state) {
             loginResponseCall = Api.getUserService().userLogin(user, pass);
         } else {
-            loginResponseCall = Api.getUserService().userLogin(et_username.getText().toString(), et_password.getText().toString());
+            loginResponseCall = Api.getUserService().userLogin(et_username.getText().toString().toLowerCase().trim(), et_password.getText().toString().toLowerCase().trim());
         }
         loginResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
@@ -137,24 +137,16 @@ public class LoginActivity extends AppCompatActivity {
                         Gson g = new Gson();
                         Type listType = new TypeToken<ArrayList<ResponseLoginRegisterDTO>>(){}.getType();
                         ArrayList<ResponseLoginRegisterDTO> userLogin = g.fromJson(g.toJson(userList), listType);
-                        String s = userLogin.get(0).getUserType();
+                        String userType = userLogin.get(0).getUserType();
                         Integer userId = userLogin.get(0).getUserId();
                         saveButtonState();
-                        if ("observee".equals(s)){
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("userId", userId);
-                            intent.putExtra("userType", "observee");
-                            startActivity(intent);
-                            finish();
-                        } else if ("observer".equals(s)) {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("userId", userId);
-                            intent.putExtra("userType", "observer");
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
-                        }
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("userType", userType);
+                        startActivity(intent);
+                        finish();
+
                     } else if (userServerResponse.getCode() == 500){
                         Toast.makeText(LoginActivity.this, "Incorrect username or password", Toast.LENGTH_LONG).show();
                     }

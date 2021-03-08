@@ -16,7 +16,7 @@ public class Api {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://dondeestanapp-ws.us-east-2.elasticbeanstalk.com/")
+                .baseUrl("http://dondeestanws-env.eba-8mwa2gm6.sa-east-1.elasticbeanstalk.com/")
                 .client(okHttpClient)
                 .build();
 
@@ -29,15 +29,15 @@ public class Api {
         return loginRegisterService;
     }
 
-    public static DriverService getDriverService() {
+    public static DriverService driverService() {
         DriverService driverService = getRetrofit().create(DriverService.class);
 
         return driverService;
     }
 
-    public static DriverService setDriverService() {
-        DriverService setDriverService = getRetrofit().create(DriverService.class);
+    public static AddressService addressService() {
+        AddressService addressService = getRetrofit().create(AddressService.class);
 
-        return setDriverService;
+        return addressService;
     }
 }
