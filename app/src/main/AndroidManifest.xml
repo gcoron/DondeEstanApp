@@ -31,7 +31,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDxrpW9VZBHrEohJ3KkUfKTgaRk_7-vozA" />
+            android:value="AIzaSyCiySV628ohYGDfoPXrWiLJzV6rlzmW1YU" />
 
         <activity
             android:name=".ui.LoginActivity"

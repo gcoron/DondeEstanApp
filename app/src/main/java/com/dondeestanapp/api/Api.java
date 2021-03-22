@@ -40,4 +40,10 @@ public class Api {
 
         return addressService;
     }
+
+    public static LocationService locationService() {
+        LocationService locationService = getRetrofit().create(LocationService.class);
+
+        return locationService;
+    }
 }
