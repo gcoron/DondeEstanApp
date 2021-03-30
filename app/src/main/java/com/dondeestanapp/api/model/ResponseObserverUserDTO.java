@@ -1,10 +1,10 @@
 package com.dondeestanapp.api.model;
 
-import com.dondeestanapp.api.DriverService;
+import com.dondeestanapp.api.ObserverUserService;
 
 import retrofit2.Call;
 
-public class ResponseDriverDTO implements DriverService {
+public class ResponseObserverUserDTO implements ObserverUserService {
 
     private String name;
     private String lastName;
@@ -68,6 +68,11 @@ public class ResponseDriverDTO implements DriverService {
 
     @Override
     public Call<ServerResponse> setDriverInObserverUser(int userIdObserverUser, String userObserveePrivacyKey) {
+        return null;
+    }
+
+    @Override
+    public Call<ServerResponse> getLastLocationByObserverUserId(Integer userId) {
         return null;
     }
 }

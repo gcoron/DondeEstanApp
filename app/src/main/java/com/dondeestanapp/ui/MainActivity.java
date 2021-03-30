@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -29,23 +27,14 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.dondeestanapp.R;
 import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
+import com.dondeestanapp.api.model.LocationDTO;
 import com.dondeestanapp.api.model.ServerResponse;
 import com.dondeestanapp.ui.fragments.AccountFragment;
 import com.dondeestanapp.ui.fragments.InformationFragment;
 import com.dondeestanapp.ui.fragments.MapsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,15 +86,16 @@ public class MainActivity extends FragmentActivity {
         if (userType.equals("observee")) {
             handler.postDelayed(runnable, 5000);
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             } else {
                 locationStart();
             }
         }
-
-
-
     }
 
     //Insertamos los datos a nuestra webService
@@ -124,7 +114,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.isSuccessful()) {
-                    ServerResponse<ResponseLoginRegisterDTO> userServerResponse = new ServerResponse<ResponseLoginRegisterDTO>(response.body().getCode(), response.body().getData(), response.body().getPaginator(), response.body().getStatus());
+                    ServerResponse<LocationDTO> userServerResponse = new ServerResponse<LocationDTO>(response.body().getCode(), response.body().getData(), response.body().getPaginator(), response.body().getStatus());
                     if (userServerResponse.getCode() == 200){
                         isSavedLocation = true;
 
@@ -162,7 +152,7 @@ public class MainActivity extends FragmentActivity {
                     public void run() {
                         // TODO Auto-generated method stub
                         Toast.makeText(context, "Location saved successfull", Toast.LENGTH_LONG).show();
-
+                        isSavedLocation = false;
                     }
                 });
             else
@@ -187,7 +177,10 @@ public class MainActivity extends FragmentActivity {
             Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(settingsIntent);
         }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
             return;
         }
@@ -215,10 +208,6 @@ public class MainActivity extends FragmentActivity {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             this.dayHour = simpleDateFormat.format(new Date());
         }
-    }
-
-    public void setIsSavedLocation(Boolean isSavedLocation) {
-        this.isSavedLocation = isSavedLocation;
     }
 
     /* Aqui empieza la Clase Localizacion */

@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
 import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseDriverDTO;
+import com.dondeestanapp.api.model.ResponseObserverUserDTO;
 import com.dondeestanapp.api.model.ServerResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -72,22 +72,22 @@ public class DriverActivity extends AppCompatActivity {
 
         Call<ServerResponse> registerResponseCall;
 
-        registerResponseCall = Api.driverService().getDriverById(userId);
+        registerResponseCall = Api.observerUserService().getDriverById(userId);
 
         registerResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.isSuccessful()) {
-                    ServerResponse<ResponseDriverDTO> userServerResponse =
-                            new ServerResponse<ResponseDriverDTO>(
+                    ServerResponse<ResponseObserverUserDTO> userServerResponse =
+                            new ServerResponse<ResponseObserverUserDTO>(
                                     response.body().getCode(), response.body().getData(),
                                     response.body().getPaginator(), response.body().getStatus());
 
                     if (userServerResponse.getCode() == 200){
-                        List<ResponseDriverDTO> userList = userServerResponse.getData();
+                        List<ResponseObserverUserDTO> userList = userServerResponse.getData();
                         Gson g = new Gson();
-                        Type listType = new TypeToken<ArrayList<ResponseDriverDTO>>(){}.getType();
-                        ArrayList<ResponseDriverDTO> userLogin = g.fromJson(g.toJson(userList), listType);
+                        Type listType = new TypeToken<ArrayList<ResponseObserverUserDTO>>(){}.getType();
+                        ArrayList<ResponseObserverUserDTO> userLogin = g.fromJson(g.toJson(userList), listType);
                         String name = userLogin.get(0).getName();
                         Toast.makeText(DriverActivity.this, "Get successful", Toast.LENGTH_LONG).show();
 
@@ -162,15 +162,15 @@ public class DriverActivity extends AppCompatActivity {
                     } else {
                         Call<ServerResponse> createDriverResponseCall;
 
-                        createDriverResponseCall = Api.driverService().setDriverInObserverUser(
+                        createDriverResponseCall = Api.observerUserService().setDriverInObserverUser(
                                 userId, et_privacy_key.getText().toString().toLowerCase().trim());
 
                         createDriverResponseCall.enqueue(new Callback<ServerResponse>() {
                             @Override
                             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                                 if (response.isSuccessful()) {
-                                    ServerResponse<ResponseDriverDTO> userServerResponse =
-                                            new ServerResponse<ResponseDriverDTO>(
+                                    ServerResponse<ResponseObserverUserDTO> userServerResponse =
+                                            new ServerResponse<ResponseObserverUserDTO>(
                                                     response.body().getCode(), response.body().getData(),
                                                     response.body().getPaginator(), response.body().getStatus());
 
@@ -206,14 +206,14 @@ public class DriverActivity extends AppCompatActivity {
                 } else if (btn_create_driver.getText().equals("Eliminar")){
                     Call<ServerResponse> deleteDriverResponseCall;
 
-                    deleteDriverResponseCall = Api.driverService().setDriverInObserverUser(userId, "user1test1.12345678");
+                    deleteDriverResponseCall = Api.observerUserService().setDriverInObserverUser(userId, "user1test1.12345678");
 
                     deleteDriverResponseCall.enqueue(new Callback<ServerResponse>() {
                         @Override
                         public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                             if (response.isSuccessful()) {
-                                ServerResponse<ResponseDriverDTO> userServerResponse =
-                                        new ServerResponse<ResponseDriverDTO>(
+                                ServerResponse<ResponseObserverUserDTO> userServerResponse =
+                                        new ServerResponse<ResponseObserverUserDTO>(
                                                 response.body().getCode(), response.body().getData(),
                                                 response.body().getPaginator(), response.body().getStatus());
 
