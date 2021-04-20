@@ -6,11 +6,13 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +20,9 @@ import com.dondeestanapp.R;
 import com.dondeestanapp.api.Api;
 import com.dondeestanapp.api.model.ResponseObserverUserDTO;
 import com.dondeestanapp.api.model.ServerResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,6 +38,7 @@ public class DriverActivity extends AppCompatActivity {
 
     private Integer userId;
     private String userType;
+    private String driverPrivacyKey;
 
     EditText et_name;
     EditText et_lastName;
@@ -43,6 +49,8 @@ public class DriverActivity extends AppCompatActivity {
 
     Button btn_cancel_driver;
     Button btn_create_driver;
+
+    private static final String TAG = "UNSUSCRIBE TO TOPIC: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +113,8 @@ public class DriverActivity extends AppCompatActivity {
                             et_company.setText(userLogin.get(0).getCompanyName());
                             et_license_plate.setText(userLogin.get(0).getLicensePlate());
                             et_car_registration.setText(userLogin.get(0).getCarRegistration());
+
+                            driverPrivacyKey = userLogin.get(0).getPrivacyKey();
 
                             btn_create_driver.setText("Eliminar");
                         } else {
@@ -218,6 +228,7 @@ public class DriverActivity extends AppCompatActivity {
                                                 response.body().getPaginator(), response.body().getStatus());
 
                                 if (userServerResponse.getCode() == 200){
+                                    unsuscribedTopicNotification();
                                     Toast.makeText(DriverActivity.this, "Chofer eliminado correctamente", Toast.LENGTH_LONG).show();
 
                                 } else if (userServerResponse.getCode() == 500){
@@ -260,5 +271,20 @@ public class DriverActivity extends AppCompatActivity {
         intent.putExtra("userType", userType);
         startActivity(intent);
         finish();
+    }
+
+    public void unsuscribedTopicNotification() {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(driverPrivacyKey)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = getString(R.string.msg_unsubscribed);
+                        if (!task.isSuccessful()) {
+                            msg = getString(R.string.msg_unsubscribe_failed);
+                        }
+                        Log.d(TAG, msg);
+                        Toast.makeText(DriverActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -41,7 +41,13 @@
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="information_fragment">DondeEstanApp V1.0</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_maps_key">AIzaSyDxrpW9VZBHrEohJ3KkUfKTgaRk_7-vozA</string>
+
+    <string name="msg_subscribed">message suscribed</string>
+    <string name="msg_subscribe_failed">message suscribed failed</string>
+    <string name="msg_unsubscribed">message unsuscribed</string>
+    <string name="msg_unsubscribe_failed">message unsuscribed failed</string>
+
 </resources>

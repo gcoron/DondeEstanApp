@@ -1,5 +1,7 @@
 package com.dondeestanapp.api.model;
 
+import java.util.List;
+
 public class ObserverUserDTO {
 
     private int userId;
@@ -10,14 +12,32 @@ public class ObserverUserDTO {
     private String username;
     private String password;
     private String childsName;
-    private UserObserveeDTO userObserveeDTO;
+    private String userObserveePrivacyKey;
+    private Location lastLocation;
+    private List<Address> addresses;
 
-    public UserObserveeDTO getUserObserveeDTO() {
-        return userObserveeDTO;
+    public String getUserObserveePrivacyKey() {
+        return userObserveePrivacyKey;
     }
 
-    public void setUserObserveeDTO(UserObserveeDTO userObserveeDTO) {
-        this.userObserveeDTO = userObserveeDTO;
+    public void setUserObserveePrivacyKey(String userObserveeId) {
+        this.userObserveePrivacyKey = userObserveeId;
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
+    }
+
+    public void setLastLocation(Location lastLocation) {
+        this.lastLocation = lastLocation;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     public int getUserId() {
