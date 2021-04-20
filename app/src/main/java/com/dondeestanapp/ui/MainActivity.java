@@ -2,8 +2,10 @@ package com.dondeestanapp.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,35 +19,55 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.dondeestanapp.MyFirebaseMessagingService;
 import com.dondeestanapp.R;
 import com.dondeestanapp.api.Api;
 import com.dondeestanapp.api.model.LocationDTO;
+import com.dondeestanapp.api.model.ObserverUserDTO;
 import com.dondeestanapp.api.model.ServerResponse;
 import com.dondeestanapp.ui.fragments.AccountFragment;
 import com.dondeestanapp.ui.fragments.InformationFragment;
 import com.dondeestanapp.ui.fragments.MapsFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.tapadoo.alerter.Alerter;
+
 public class MainActivity extends FragmentActivity {
 
     private static final int INTERVAL = 2000; //2 segundos para salir
+    private static final String TAG = "SUSCRIBE TO TOPIC: ";
+
     private long firstClickTime;
 
     private Integer userId;
+
+    private String driverPrivacyKey;
     private String userType;
 
     private String latitude;
@@ -70,6 +92,22 @@ public class MainActivity extends FragmentActivity {
         }
     };
 
+    public BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String titleNotification = intent.getStringExtra("title");
+            String descriptionNotification = intent.getStringExtra("description");
+
+            if (titleNotification != null) {
+                Intent intentDialog = new Intent(MainActivity.this, DialogActivity.class);
+                intentDialog.putExtra("title", titleNotification);
+                intentDialog.putExtra("description", descriptionNotification);
+                startActivity(intentDialog);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,21 +119,80 @@ public class MainActivity extends FragmentActivity {
         BottomNavigationView navigation = findViewById(R.id.navigationViewObservee);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(MyFirebaseMessagingService.ACTION_NEW_NOTIFICATION));
+
         loadFragment(new MapsFragment());
 
         if (userType.equals("observee")) {
             handler.postDelayed(runnable, 5000);
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
             ) {
 
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
+                    1000);
             } else {
                 locationStart();
             }
+        } else {
+            setDataUserObservee();
         }
+    }
+
+    private void setDataUserObservee() {
+        Call<ServerResponse> initObserverUserResponseCall;
+
+        initObserverUserResponseCall = Api.observerUserService().setInitDataOfObserverUser(userId);
+
+        initObserverUserResponseCall.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.isSuccessful()) {
+                    ServerResponse<ObserverUserDTO> userServerResponse =
+                            new ServerResponse<ObserverUserDTO>(
+                                response.body().getCode(),
+                                response.body().getData(),
+                                response.body().getPaginator(),
+                                response.body().getStatus()
+                            );
+
+                    if (userServerResponse.getCode() == 200){
+                        List<ObserverUserDTO> observerUserDTOList = userServerResponse.getData();
+                        Gson g = new Gson();
+                        Type listType = new TypeToken<ArrayList<ObserverUserDTO>>(){}.getType();
+                        ArrayList<ObserverUserDTO> observerUserDTO =
+                                g.fromJson(
+                                        g.toJson(observerUserDTOList),
+                                        listType
+                                );
+
+                        driverPrivacyKey = observerUserDTO.get(0).getUserObserveePrivacyKey();
+                        setTopicNotification();
+
+                    } else if (userServerResponse.getCode() == 500){
+                        Toast.makeText(MainActivity.this, "Server error", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Save location failed", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     //Insertamos los datos a nuestra webService
@@ -313,6 +410,21 @@ public class MainActivity extends FragmentActivity {
             Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
         }
         firstClickTime = System.currentTimeMillis();
+    }
+
+    public void setTopicNotification() {
+        FirebaseMessaging.getInstance().subscribeToTopic(driverPrivacyKey)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = getString(R.string.msg_subscribed);
+                        if (!task.isSuccessful()) {
+                            msg = getString(R.string.msg_subscribe_failed);
+                        }
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 }

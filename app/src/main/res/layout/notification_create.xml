@@ -90,26 +90,26 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/btn_cancel_create_notification"
         android:layout_width="140dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/button_rounded"
         android:text="Cancelar"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/btn_create_notification"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout2" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_create_notification"
         android:layout_width="140dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/button_rounded"
         android:text="Crear Notificación"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button1"
+        app:layout_constraintStart_toEndOf="@+id/btn_cancel_create_notification"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout2"
         tools:ignore="MissingConstraints" />
 

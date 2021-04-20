@@ -18,4 +18,7 @@ public interface ObserverUserService {
     @GET("wsuor/userObserveeLocationsByObserverUserId")
     Call<ServerResponse> getLastLocationByObserverUserId(@Query("id") Integer userId);
 
+    @GET("wsuor/observerUserInit")
+    Call<ServerResponse> setInitDataOfObserverUser(@Query("id") Integer userId);
+
 }

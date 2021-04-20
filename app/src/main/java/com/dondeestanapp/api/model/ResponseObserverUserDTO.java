@@ -75,4 +75,9 @@ public class ResponseObserverUserDTO implements ObserverUserService {
     public Call<ServerResponse> getLastLocationByObserverUserId(Integer userId) {
         return null;
     }
+
+    @Override
+    public Call<ServerResponse> setInitDataOfObserverUser(Integer userId) {
+        return null;
+    }
 }
