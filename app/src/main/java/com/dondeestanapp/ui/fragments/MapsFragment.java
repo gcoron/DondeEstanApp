@@ -11,19 +11,13 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +29,11 @@ import com.dondeestanapp.R;
 import com.dondeestanapp.api.Api;
 import com.dondeestanapp.api.model.LocationDTO;
 import com.dondeestanapp.api.model.ResponseAddressDTO;
-import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
 import com.dondeestanapp.api.model.ServerResponse;
 import com.dondeestanapp.ui.AddressActivity;
 import com.dondeestanapp.ui.AddressListActivity;
+import com.dondeestanapp.ui.CreateNotification;
 import com.dondeestanapp.ui.DriverActivity;
-import com.dondeestanapp.ui.MainActivity;
 import com.dondeestanapp.ui.MessagesListActivity;
 import com.dondeestanapp.ui.NotificationsListActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -58,16 +51,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
@@ -187,6 +176,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), MessagesListActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });
@@ -194,7 +185,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         notification_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), NotificationsListActivity.class);
+                Intent intent = new Intent(getActivity(), CreateNotification.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });
@@ -215,7 +208,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                 Call<ServerResponse> createAddressResponseCall;
 
-                createAddressResponseCall = Api.addressService().getAddressesById(userId);
+                createAddressResponseCall = Api.getAddressService().getAddressesById(userId);
 
                 createAddressResponseCall.enqueue(new Callback<ServerResponse>() {
                     @Override
@@ -460,7 +453,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         Call<ServerResponse> locationUpdateResponseCall;
 
-        locationUpdateResponseCall = Api.observerUserService().getLastLocationByObserverUserId(this.userId);
+        locationUpdateResponseCall = Api.getObserverUserService().getLastLocationByObserverUserId(this.userId);
 
         locationUpdateResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override

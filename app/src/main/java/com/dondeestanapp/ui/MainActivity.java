@@ -19,11 +19,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -55,8 +53,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.tapadoo.alerter.Alerter;
 
 public class MainActivity extends FragmentActivity {
 
@@ -153,7 +149,7 @@ public class MainActivity extends FragmentActivity {
     private void setDataUserObservee() {
         Call<ServerResponse> initObserverUserResponseCall;
 
-        initObserverUserResponseCall = Api.observerUserService().setInitDataOfObserverUser(userId);
+        initObserverUserResponseCall = Api.getObserverUserService().setInitDataOfObserverUser(userId);
 
         initObserverUserResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
@@ -200,7 +196,7 @@ public class MainActivity extends FragmentActivity {
 
         Call<ServerResponse> locationSaveResponseCall;
 
-        locationSaveResponseCall = Api.locationService().saveLocation(
+        locationSaveResponseCall = Api.getLocationService().saveLocation(
                 this.latitude,
                 this.longitude,
                 this.dayHour,

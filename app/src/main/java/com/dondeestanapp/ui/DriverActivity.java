@@ -80,7 +80,7 @@ public class DriverActivity extends AppCompatActivity {
 
         Call<ServerResponse> registerResponseCall;
 
-        registerResponseCall = Api.observerUserService().getDriverById(userId);
+        registerResponseCall = Api.getObserverUserService().getDriverById(userId);
 
         registerResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
@@ -172,7 +172,7 @@ public class DriverActivity extends AppCompatActivity {
                     } else {
                         Call<ServerResponse> createDriverResponseCall;
 
-                        createDriverResponseCall = Api.observerUserService().setDriverInObserverUser(
+                        createDriverResponseCall = Api.getObserverUserService().setDriverInObserverUser(
                                 userId, et_privacy_key.getText().toString().toLowerCase().trim());
 
                         createDriverResponseCall.enqueue(new Callback<ServerResponse>() {
@@ -216,7 +216,7 @@ public class DriverActivity extends AppCompatActivity {
                 } else if (btn_create_driver.getText().equals("Eliminar")){
                     Call<ServerResponse> deleteDriverResponseCall;
 
-                    deleteDriverResponseCall = Api.observerUserService().setDriverInObserverUser(userId, "user1test1.12345678");
+                    deleteDriverResponseCall = Api.getObserverUserService().setDriverInObserverUser(userId, "user1test1.12345678");
 
                     deleteDriverResponseCall.enqueue(new Callback<ServerResponse>() {
                         @Override

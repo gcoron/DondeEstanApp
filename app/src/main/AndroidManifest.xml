@@ -74,6 +74,9 @@
         <activity android:name=".ui.DialogActivity"
             android:theme="@style/DialogTheme" />
 
+        <activity android:name=".ui.CreateNotification"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

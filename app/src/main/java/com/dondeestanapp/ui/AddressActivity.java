@@ -207,7 +207,7 @@ public class AddressActivity extends FragmentActivity implements
             case R.id.btn_create_address:
                 Call<ServerResponse> createAddressResponseCall;
 
-                createAddressResponseCall = Api.addressService().setAddressInObserverUser(
+                createAddressResponseCall = Api.getAddressService().setAddressInObserverUser(
                         street, number, floor, apartament, zipCode, city,
                         state, country, Double.toString(userAddress.getLatitude()),
                         Double.toString(userAddress.getLongitude()), userId);
