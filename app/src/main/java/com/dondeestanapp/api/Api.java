@@ -29,21 +29,27 @@ public class Api {
         return loginRegisterService;
     }
 
-    public static ObserverUserService observerUserService() {
+    public static ObserverUserService getObserverUserService() {
         ObserverUserService observerUserService = getRetrofit().create(ObserverUserService.class);
 
         return observerUserService;
     }
 
-    public static AddressService addressService() {
+    public static AddressService getAddressService() {
         AddressService addressService = getRetrofit().create(AddressService.class);
 
         return addressService;
     }
 
-    public static LocationService locationService() {
+    public static LocationService getLocationService() {
         LocationService locationService = getRetrofit().create(LocationService.class);
 
         return locationService;
+    }
+
+    public static NotificationService geNotificationService() {
+        NotificationService notificationService = getRetrofit().create(NotificationService.class);
+
+        return notificationService;
     }
 }
