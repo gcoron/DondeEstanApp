@@ -58,7 +58,7 @@ public class CreateNotification extends AppCompatActivity {
 
     private void createNotification() {
 
-        Call<ServerResponse> loginResponseCall = Api.geNotificationService().saveNotification(
+        Call<ServerResponse> loginResponseCall = Api.getNotificationService().saveNotification(
                 et_title.getText().toString(),
                 et_description.getText().toString(),
                 userId

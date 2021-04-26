@@ -37,6 +37,8 @@ import com.dondeestanapp.api.model.ServerResponse;
 import com.dondeestanapp.ui.fragments.AccountFragment;
 import com.dondeestanapp.ui.fragments.InformationFragment;
 import com.dondeestanapp.ui.fragments.MapsFragment;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -57,20 +59,26 @@ import retrofit2.Response;
 public class MainActivity extends FragmentActivity {
 
     private static final int INTERVAL = 2000; //2 segundos para salir
-    private static final String TAG = "SUSCRIBE TO TOPIC: ";
 
     private long firstClickTime;
 
     private Integer userId;
-
     private String driverPrivacyKey;
     private String userType;
+    /*
+    private String addressLat1;
+    private String addressLon1;
+    private String addressLat2;
+    private String addressLon2;
+    */
 
     private String latitude;
     private String longitude;
     private String dayHour;
 
     Boolean isSavedLocation = false;
+
+    //private GeofencingClient geofencingClient;
 
     private Handler handler = new Handler();
 
@@ -115,6 +123,8 @@ public class MainActivity extends FragmentActivity {
         BottomNavigationView navigation = findViewById(R.id.navigationViewObservee);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        //geofencingClient = LocationServices.getGeofencingClient(this);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(MyFirebaseMessagingService.ACTION_NEW_NOTIFICATION));
 
@@ -141,55 +151,9 @@ public class MainActivity extends FragmentActivity {
             } else {
                 locationStart();
             }
-        } else {
-            setDataUserObservee();
         }
     }
 
-    private void setDataUserObservee() {
-        Call<ServerResponse> initObserverUserResponseCall;
-
-        initObserverUserResponseCall = Api.getObserverUserService().setInitDataOfObserverUser(userId);
-
-        initObserverUserResponseCall.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                if (response.isSuccessful()) {
-                    ServerResponse<ObserverUserDTO> userServerResponse =
-                            new ServerResponse<ObserverUserDTO>(
-                                response.body().getCode(),
-                                response.body().getData(),
-                                response.body().getPaginator(),
-                                response.body().getStatus()
-                            );
-
-                    if (userServerResponse.getCode() == 200){
-                        List<ObserverUserDTO> observerUserDTOList = userServerResponse.getData();
-                        Gson g = new Gson();
-                        Type listType = new TypeToken<ArrayList<ObserverUserDTO>>(){}.getType();
-                        ArrayList<ObserverUserDTO> observerUserDTO =
-                                g.fromJson(
-                                        g.toJson(observerUserDTOList),
-                                        listType
-                                );
-
-                        driverPrivacyKey = observerUserDTO.get(0).getUserObserveePrivacyKey();
-                        setTopicNotification();
-
-                    } else if (userServerResponse.getCode() == 500){
-                        Toast.makeText(MainActivity.this, "Server error", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "Save location failed", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 
     //Insertamos los datos a nuestra webService
     private boolean insertLocation(){
@@ -361,7 +325,7 @@ public class MainActivity extends FragmentActivity {
             switch (item.getItemId()) {
                 case R.id.menu_maps:
                     //toolbar.setTitle("Mapa");
-                    loadFragment(new MapsFragment());
+                    loadMapFragment(new MapsFragment());
                     return true;
                 case R.id.menu_account:
                     //toolbar.setTitle("Mi Cuenta");
@@ -376,6 +340,23 @@ public class MainActivity extends FragmentActivity {
             return false;
         }
     };
+
+    private void loadMapFragment(Fragment fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("userId", userId);
+        bundle.putString("userType", userType);
+        //bundle.putInt("driverId", driverId);
+        /*bundle.putString("addressLat1", addressLat1);
+        bundle.putString("addressLon1", addressLon1);
+        bundle.putString("addressLat2", addressLat2);
+        bundle.putString("addressLon2", addressLon2);*/
+        fragment.setArguments(bundle);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     private void loadFragment(Fragment fragment) {
         Bundle bundle = new Bundle();
@@ -406,21 +387,6 @@ public class MainActivity extends FragmentActivity {
             Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
         }
         firstClickTime = System.currentTimeMillis();
-    }
-
-    public void setTopicNotification() {
-        FirebaseMessaging.getInstance().subscribeToTopic(driverPrivacyKey)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = getString(R.string.msg_subscribed);
-                        if (!task.isSuccessful()) {
-                            msg = getString(R.string.msg_subscribe_failed);
-                        }
-                        Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
 }

@@ -140,6 +140,7 @@ public class AddressListActivity extends FragmentActivity implements
                                 Intent intent = new Intent(AddressListActivity.this, MainActivity.class);
                                 intent.putExtra("userId", userId);
                                 intent.putExtra("userType", userType);
+
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();

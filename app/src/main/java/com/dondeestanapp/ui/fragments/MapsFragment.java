@@ -13,11 +13,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +30,10 @@ import android.widget.Toast;
 
 import com.dondeestanapp.R;
 import com.dondeestanapp.api.Api;
+import com.dondeestanapp.api.model.Address;
 import com.dondeestanapp.api.model.LocationDTO;
+import com.dondeestanapp.api.model.NotificationDTO;
+import com.dondeestanapp.api.model.ObserverUserDTO;
 import com.dondeestanapp.api.model.ResponseAddressDTO;
 import com.dondeestanapp.api.model.ServerResponse;
 import com.dondeestanapp.ui.AddressActivity;
@@ -35,7 +41,6 @@ import com.dondeestanapp.ui.AddressListActivity;
 import com.dondeestanapp.ui.CreateNotification;
 import com.dondeestanapp.ui.DriverActivity;
 import com.dondeestanapp.ui.MessagesListActivity;
-import com.dondeestanapp.ui.NotificationsListActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -43,10 +48,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -66,6 +76,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private static final int LOCATION_REQUEST_CODE = 101;
+    private static final String TAGTOPIC = "SUSCRIBE TO TOPIC: ";
+
     private GoogleMap mMap;
     View mapsView;
 
@@ -86,11 +98,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
 
     private Integer userId;
+    private Integer driverId;
+    private String driverPrivacyKey;
     private String userType;
-    private String latitude;
-    private String longitude;
+    private String driverLatitude;
+    private String driverLongitude;
+/*
+    private String addressLat1 = "0";
+    private String addressLon1 = "0";
+    private String addressLat2 = "0";
+    private String addressLon2 = "0";
+    private Float lat1;
+    private Float lon1;
+    private Float lat2;
+    private Float lon2;
+*/
+    private List<Address> addressDTOList;
 
-    private final int TIEMPO = 30000;
+    private final int TIME = 30000;
 
     private MarkerOptions busMarker;
 
@@ -102,8 +127,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         @Override
         public void run() {
             try {
+                //moveCameraToLastLocation(mMap);
                 new UpdateLocation(getActivity()).execute();
-                updateCamera(mMap);
+                //updateCamera(mMap);
                 handler.postDelayed(runnable, 30000);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -135,6 +161,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         userId = getArguments().getInt("userId");
         userType = getArguments().getString("userType");
+
+        if (userType.equals("observer")) {
+            setDataDriver();
+            //setAddresses();
+        }
 
         myLocation_btn = mapsView.findViewById(R.id.floating_action_button_my_location);
         add_btn = mapsView.findViewById(R.id.floating_action_button_add);
@@ -205,54 +236,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         address_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (addressDTOList.size() == 0) {
+                    Intent intent = new Intent(getActivity(), AddressActivity.class);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("userType", userType);
+                    startActivity(intent);
 
-                Call<ServerResponse> createAddressResponseCall;
+                } else if (addressDTOList.size() > 0) {
+                    Intent intent = new Intent(getActivity(), AddressListActivity.class);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("userType", userType);
+                    intent.putExtra("addressCount", addressDTOList.size());
+                    intent.putExtra("addresses", (Parcelable) addressDTOList);
 
-                createAddressResponseCall = Api.getAddressService().getAddressesById(userId);
+                    startActivity(intent);
 
-                createAddressResponseCall.enqueue(new Callback<ServerResponse>() {
-                    @Override
-                    public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                        if (response.isSuccessful()) {
-                            ServerResponse<ResponseAddressDTO> userServerResponse =
-                                    new ServerResponse<ResponseAddressDTO>(
-                                            response.body().getCode(), response.body().getData(),
-                                            response.body().getPaginator(), response.body().getStatus());
-
-                            List<ResponseAddressDTO> addressList = userServerResponse.getData();
-                            Gson g = new Gson();
-                            Type listType = new TypeToken<ArrayList<ResponseAddressDTO>>() {
-                            }.getType();
-                            ArrayList<ResponseAddressDTO> observerUserAddress = g.fromJson(g.toJson(addressList), listType);
-
-                            if (userServerResponse.getCode() == 200 && observerUserAddress.size() == 0) {
-                                Intent intent = new Intent(getActivity(), AddressActivity.class);
-                                intent.putExtra("userId", userId);
-                                intent.putExtra("userType", userType);
-                                startActivity(intent);
-
-                            } else if (userServerResponse.getCode() == 200 && observerUserAddress.size() > 0) {
-                                Intent intent = new Intent(getActivity(), AddressListActivity.class);
-                                intent.putExtra("userId", userId);
-                                intent.putExtra("userType", userType);
-                                intent.putExtra("addressCount", observerUserAddress.size());
-                                intent.putExtra("addresses", observerUserAddress);
-
-                                startActivity(intent);
-
-                            } else if (userServerResponse.getCode() == 500) {
-                                Toast.makeText(getActivity(), "Incorrect userId", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(getActivity(), "Address request failed", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ServerResponse> call, Throwable t) {
-                        Toast.makeText(getActivity(), "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                } else {
+                    Toast.makeText(getActivity(), "Error in addresses", Toast.LENGTH_LONG).show();
+                }
 
                 Intent intent = new Intent(getActivity(), AddressActivity.class);
                 intent.putExtra("userId", userId);
@@ -264,12 +265,111 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return mapsView;
     }
 
+    private void setDataDriver() {
+        Call<ServerResponse> initObserverUserResponseCall;
+
+        initObserverUserResponseCall = Api.getObserverUserService().setInitDataOfObserverUser(userId);
+
+        initObserverUserResponseCall.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.isSuccessful()) {
+                    ServerResponse<ObserverUserDTO> userServerResponse =
+                            new ServerResponse<ObserverUserDTO>(
+                                    response.body().getCode(),
+                                    response.body().getData(),
+                                    response.body().getPaginator(),
+                                    response.body().getStatus()
+                            );
+
+                    if (userServerResponse.getCode() == 200){
+                        List<ObserverUserDTO> observerUserDTOList = userServerResponse.getData();
+                        Gson g = new Gson();
+                        Type listType = new TypeToken<ArrayList<ObserverUserDTO>>(){}.getType();
+                        ArrayList<ObserverUserDTO> observerUserDTO =
+                                g.fromJson(
+                                        g.toJson(observerUserDTOList),
+                                        listType
+                                );
+
+                        driverId = observerUserDTO.get(0).getUserObserveeId();
+                        driverPrivacyKey = observerUserDTO.get(0).getUserObserveePrivacyKey();
+                        addressDTOList = observerUserDTO.get(0).getAddresses();
+                        setTopicNotification();
+
+                    } else if (userServerResponse.getCode() == 500){
+                        Toast.makeText(getActivity(), "Server error", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Save location failed", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    public void setTopicNotification() {
+        FirebaseMessaging.getInstance().subscribeToTopic(driverPrivacyKey)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = getString(R.string.msg_subscribed);
+                        if (!task.isSuccessful()) {
+                            msg = getString(R.string.msg_subscribe_failed);
+                        }
+                        Log.d(TAGTOPIC, msg);
+                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+/*
+    private void setAddresses() {
+
+        Call<ServerResponse> createAddressResponseCall;
+
+        createAddressResponseCall = Api.getAddressService().getAddressesById(userId);
+
+        createAddressResponseCall.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.isSuccessful()) {
+                    ServerResponse<ResponseAddressDTO> userServerResponse =
+                            new ServerResponse<ResponseAddressDTO>(
+                                    response.body().getCode(), response.body().getData(),
+                                    response.body().getPaginator(), response.body().getStatus());
+
+                    List<ResponseAddressDTO> addressList = userServerResponse.getData();
+                    Gson g = new Gson();
+                    Type listType = new TypeToken<ArrayList<ResponseAddressDTO>>() {
+                    }.getType();
+                    ArrayList<ResponseAddressDTO> observerUserAddress = g.fromJson(g.toJson(addressList), listType);
+
+                    addressDTOList = observerUserAddress;
+
+                } else {
+                    Toast.makeText(getActivity(), "Address request failed", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+*/
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         if (mMap != null) {
             initMap(mMap);
+            moveCameraToLastLocation(mMap);
         }
     }
 
@@ -294,23 +394,116 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (permission == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
+            mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+            LatLng latLng = new LatLng(Double.parseDouble(driverLatitude), Double.parseDouble(driverLongitude));
             float zoom = 15;
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
             mMap.clear();
             mMap.addMarker(busMarker.position(latLng));
+
+            if (addressDTOList != null) {
+                for (int i = 0; i < addressDTOList.size(); i++) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(
+                                    Double.valueOf(addressDTOList.get(i).getLatitude()),
+                                    Double.valueOf(addressDTOList.get(i).getLongitude()))
+                            )
+                            .title(addressDTOList.get(i).getStreet() +
+                                    " " +
+                                    addressDTOList.get(i).getNumber()));
+
+                    Circle circle = mMap.addCircle(new CircleOptions()
+                            .center(new LatLng(
+                                    Double.valueOf(addressDTOList.get(i).getLatitude()),
+                                    Double.valueOf(addressDTOList.get(i).getLongitude()))
+                            )
+                            .radius(100)
+                            .strokeColor(Color.RED)
+                            .fillColor(Color.BLUE));
+
+                    float[] distanceBetween = new float[2];
+
+                    Location.distanceBetween(
+                            Double.valueOf(driverLatitude),
+                            Double.valueOf(driverLongitude),
+                            circle.getCenter().latitude,
+                            circle.getCenter().longitude,
+                            distanceBetween);
+
+                    Float dist = distanceBetween[0];
+                    Double radius = circle.getRadius();
+
+                    //if (distanceBetween[0] < circle.getRadius()) {
+                    if (dist < radius) {
+                        createNotification(
+                                "Aviso de arribo exitoso",
+                                addressDTOList.get(i).getStreet() + " " +
+                                        addressDTOList.get(i).getNumber(),
+                                driverId
+                        );
+                    }
+                }
+            }
+
+            /////////////////////////////////////////////////////////////////////
         } else {
             requestPermission(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     LOCATION_REQUEST_CODE);
         }
+    }
+
+    private void createNotification(String title, String description, Integer driverId) {
+
+        Call<ServerResponse> loginResponseCall = Api.getNotificationService().saveNotification(
+                title,
+                description,
+                driverId
+        );
+
+        loginResponseCall.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.isSuccessful()) {
+                    ServerResponse<NotificationDTO> userServerResponse;
+                    userServerResponse = new ServerResponse<NotificationDTO>(
+                            response.body().getCode(),
+                            response.body().getData(),
+                            response.body().getPaginator(),
+                            response.body().getStatus()
+                    );
+                    if (userServerResponse.getCode() == 200) {
+                        Log.d("NOTIFICATION SENT: ", "Arribo exitoso");
+
+                    } else if (userServerResponse.getCode() == 500) {
+                        Toast.makeText(
+                                getActivity(),
+                                "Notification failed. Server error",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(
+                            getActivity(),
+                            "Notification failed",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Toast.makeText(
+                        getActivity(),
+                        "Throwable " + t.getLocalizedMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
     }
 
     private void moveCameraToLastLocation(GoogleMap googleMap) {
@@ -320,11 +513,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (permission == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
+            if (userType == "observee") {
+                mMap.setMyLocationEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+            }
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -335,7 +532,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
                                 // Logic to handle location object
-                                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                LatLng latLng = new LatLng(
+                                        location.getLatitude(),
+                                        location.getLongitude()
+                                );
                                 float zoom = 15;
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
                             }
@@ -354,22 +554,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         if (userType.equals("observee")) {
             moveCameraToLastLocation(mMap);
         } else if (userType.equals("observer")) {
+
             handler.postDelayed(runnable, 5000);
 
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
+                        1000);
             } else {
-                ejecutarTarea();
+                runTask();
             }
         }
     }
 
-    public void ejecutarTarea() {
-        handler.postDelayed(runnable, TIEMPO);
-
+    public void runTask() {
+        handler.postDelayed(runnable, TIME);
     }
 
     private void onAddButtonClicked() {
@@ -466,8 +674,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         Type listType = new TypeToken<ArrayList<LocationDTO>>() {
                         }.getType();
                         ArrayList<LocationDTO> locations = g.fromJson(g.toJson(locationsList), listType);
-                        latitude = locations.get(0).getLatitude();
-                        longitude = locations.get(0).getLongitude();
+                        driverLatitude = locations.get(0).getLatitude();
+                        driverLongitude = locations.get(0).getLongitude();
                         isSavedLocation = true;
 
                     } else if (userServerResponse.getCode() == 500) {

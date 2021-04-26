@@ -12,9 +12,18 @@ public class ObserverUserDTO {
     private String username;
     private String password;
     private String childsName;
+    private Integer userObserveeId;
     private String userObserveePrivacyKey;
     private Location lastLocation;
     private List<Address> addresses;
+
+    public Integer getUserObserveeId() {
+        return userObserveeId;
+    }
+
+    public void setUserObserveeId(Integer userObserveeId) {
+        this.userObserveeId = userObserveeId;
+    }
 
     public String getUserObserveePrivacyKey() {
         return userObserveePrivacyKey;
