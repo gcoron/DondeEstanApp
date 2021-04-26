@@ -47,7 +47,7 @@ public class Api {
         return locationService;
     }
 
-    public static NotificationService geNotificationService() {
+    public static NotificationService getNotificationService() {
         NotificationService notificationService = getRetrofit().create(NotificationService.class);
 
         return notificationService;
