@@ -76,7 +76,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private static final int LOCATION_REQUEST_CODE = 101;
-    private static final String TAGTOPIC = "SUSCRIBE TO TOPIC: ";
+    private static final String TAGTOPIC = "SUSCRIBED TO TOPIC: ";
 
     private GoogleMap mMap;
     View mapsView;
