@@ -6,12 +6,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dondeestanapp.R;
 import com.dondeestanapp.api.model.MessageChat;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +26,10 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesListActivity extends AppCompatActivity {
+
+    private Integer userId;
+    private String userType;
+    private String driverPrivacyKey;
 
     private CircleImageView profilePicture;
     private TextView tv_name;
@@ -28,52 +39,92 @@ public class MessagesListActivity extends AppCompatActivity {
 
     private AdapterMessage adapterMessage;
 
-    //private FirebaseDatabase firebaseDatabase;
-    //private DatabaseReference databaseReference;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages_list);
 
-        profilePicture = findViewById(R.id.profile_picture);
-        tv_name = findViewById(R.id.tv_name);
-        rv_messages = (RecyclerView) findViewById(R.id.rv_messages);
-        et_message = findViewById(R.id.et_message);
-        btn_send_message = findViewById(R.id.btn_send_message);
+        userId = getIntent().getIntExtra("userId", 0);
+        userType = getIntent().getStringExtra("userType");
+        driverPrivacyKey = getIntent().getStringExtra("privacyKey");
 
+        if (driverPrivacyKey.equals("") || driverPrivacyKey == null) {
+            et_message.setEnabled(false);
+            btn_send_message.setEnabled(false);
 
+        } else {
+            profilePicture = findViewById(R.id.profile_picture);
+            tv_name = findViewById(R.id.tv_name);
+            rv_messages = (RecyclerView) findViewById(R.id.rv_messages);
+            et_message = findViewById(R.id.et_message);
+            btn_send_message = findViewById(R.id.btn_send_message);
 
-        adapterMessage = new AdapterMessage(this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rv_messages.setLayoutManager(linearLayoutManager);
-        rv_messages.setAdapter(adapterMessage);
+            firebaseDatabase = FirebaseDatabase.getInstance();
 
-        btn_send_message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SimpleDateFormat simpleDateFormat;
-                simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                String currentDateandTime = simpleDateFormat.format(new Date());
-                adapterMessage.addMessage(new MessageChat(
-                                et_message.getText().toString(),
-                                tv_name.getText().toString(),
-                                "",
-                                currentDateandTime
-                        )
-                );
-                et_message.setText("");
-            }
-        });
+            String[] chatRoom = driverPrivacyKey.split("\\.");
+            databaseReference = firebaseDatabase.getReference(chatRoom[0]);
 
-        adapterMessage.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                setTopScrollbar();
-            }
-        });
+            adapterMessage = new AdapterMessage(this);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            rv_messages.setLayoutManager(linearLayoutManager);
+            rv_messages.setAdapter(adapterMessage);
 
+            btn_send_message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SimpleDateFormat simpleDateFormat;
+                    simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                    String currentDateandTime = simpleDateFormat.format(new Date());
+                    databaseReference.push().setValue(new MessageChat(
+                                    et_message.getText().toString(),
+                                    tv_name.getText().toString(),
+                                    "",
+                                    currentDateandTime
+                            )
+                    );
+                    et_message.setText("");
+                }
+            });
+
+            adapterMessage.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onItemRangeInserted(int positionStart, int itemCount) {
+                    super.onItemRangeInserted(positionStart, itemCount);
+                    setTopScrollbar();
+                }
+            });
+
+            databaseReference.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    MessageChat messageChat = snapshot.getValue(MessageChat.class);
+                    adapterMessage.addMessage(messageChat);
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     private void setTopScrollbar() {

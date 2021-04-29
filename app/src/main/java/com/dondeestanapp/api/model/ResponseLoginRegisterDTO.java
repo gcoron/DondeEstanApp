@@ -12,6 +12,7 @@ public class ResponseLoginRegisterDTO implements LoginRegisterService {
     private String lastName;
     private String username;
     private String user;
+    private String privacyKey;
 
     public int getUserId() {
         return userId;
@@ -61,6 +62,14 @@ public class ResponseLoginRegisterDTO implements LoginRegisterService {
         this.user = user;
     }
 
+    public String getPrivacyKey() {
+        return privacyKey;
+    }
+
+    public void setPrivacyKey(String privacyKey) {
+        this.privacyKey = privacyKey;
+    }
+
     @Override
     public Call<ServerResponse> userLogin(String username, String password) {
         return null;
@@ -81,4 +90,5 @@ public class ResponseLoginRegisterDTO implements LoginRegisterService {
                                                      String userObserveePrivacyKey) {
         return null;
     }
+
 }

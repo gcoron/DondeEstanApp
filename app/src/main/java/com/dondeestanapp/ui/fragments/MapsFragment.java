@@ -103,16 +103,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private String userType;
     private String driverLatitude;
     private String driverLongitude;
-/*
-    private String addressLat1 = "0";
-    private String addressLon1 = "0";
-    private String addressLat2 = "0";
-    private String addressLon2 = "0";
-    private Float lat1;
-    private Float lon1;
-    private Float lat2;
-    private Float lon2;
-*/
     private List<Address> addressDTOList;
 
     private final int TIME = 30000;
@@ -161,6 +151,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         userId = getArguments().getInt("userId");
         userType = getArguments().getString("userType");
+        driverPrivacyKey = getArguments().getString("privacyKey");
+
+        if (driverPrivacyKey == null) {
+            driverPrivacyKey = "";
+        }
 
         if (userType.equals("observer")) {
             setDataDriver();
@@ -209,6 +204,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Intent intent = new Intent(getActivity(), MessagesListActivity.class);
                 intent.putExtra("userId", userId);
                 intent.putExtra("userType", userType);
+                intent.putExtra("privacyKey", driverPrivacyKey);
                 startActivity(intent);
             }
         });
@@ -282,10 +278,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                     response.body().getStatus()
                             );
 
-                    if (userServerResponse.getCode() == 200){
+                    if (userServerResponse.getCode() == 200) {
                         List<ObserverUserDTO> observerUserDTOList = userServerResponse.getData();
                         Gson g = new Gson();
-                        Type listType = new TypeToken<ArrayList<ObserverUserDTO>>(){}.getType();
+                        Type listType = new TypeToken<ArrayList<ObserverUserDTO>>() {
+                        }.getType();
                         ArrayList<ObserverUserDTO> observerUserDTO =
                                 g.fromJson(
                                         g.toJson(observerUserDTOList),
@@ -297,7 +294,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         addressDTOList = observerUserDTO.get(0).getAddresses();
                         setTopicNotification();
 
-                    } else if (userServerResponse.getCode() == 500){
+                    } else if (userServerResponse.getCode() == 500) {
                         Toast.makeText(getActivity(), "Server error", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -311,7 +308,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
 
     public void setTopicNotification() {
         FirebaseMessaging.getInstance().subscribeToTopic(driverPrivacyKey)
@@ -327,42 +323,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     }
                 });
     }
-/*
-    private void setAddresses() {
 
-        Call<ServerResponse> createAddressResponseCall;
-
-        createAddressResponseCall = Api.getAddressService().getAddressesById(userId);
-
-        createAddressResponseCall.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                if (response.isSuccessful()) {
-                    ServerResponse<ResponseAddressDTO> userServerResponse =
-                            new ServerResponse<ResponseAddressDTO>(
-                                    response.body().getCode(), response.body().getData(),
-                                    response.body().getPaginator(), response.body().getStatus());
-
-                    List<ResponseAddressDTO> addressList = userServerResponse.getData();
-                    Gson g = new Gson();
-                    Type listType = new TypeToken<ArrayList<ResponseAddressDTO>>() {
-                    }.getType();
-                    ArrayList<ResponseAddressDTO> observerUserAddress = g.fromJson(g.toJson(addressList), listType);
-
-                    addressDTOList = observerUserAddress;
-
-                } else {
-                    Toast.makeText(getActivity(), "Address request failed", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-                Toast.makeText(getActivity(), "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-*/
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -450,8 +411,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
             }
-
-            /////////////////////////////////////////////////////////////////////
         } else {
             requestPermission(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -519,9 +478,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 mMap.setMyLocationEnabled(false);
             }
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -660,35 +625,54 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private boolean updateLocation() {
 
         Call<ServerResponse> locationUpdateResponseCall;
-
-        locationUpdateResponseCall = Api.getObserverUserService().getLastLocationByObserverUserId(this.userId);
+        locationUpdateResponseCall = Api.getObserverUserService().
+                getLastLocationByObserverUserId(this.userId);
 
         locationUpdateResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.isSuccessful()) {
-                    ServerResponse<LocationDTO> userServerResponse = new ServerResponse<LocationDTO>(response.body().getCode(), response.body().getData(), response.body().getPaginator(), response.body().getStatus());
+                    ServerResponse<LocationDTO> userServerResponse;
+                    userServerResponse = new ServerResponse<LocationDTO>(
+                            response.body().getCode(),
+                            response.body().getData(),
+                            response.body().getPaginator(),
+                            response.body().getStatus());
+
                     if (userServerResponse.getCode() == 200) {
                         List<LocationDTO> locationsList = userServerResponse.getData();
                         Gson g = new Gson();
                         Type listType = new TypeToken<ArrayList<LocationDTO>>() {
                         }.getType();
-                        ArrayList<LocationDTO> locations = g.fromJson(g.toJson(locationsList), listType);
+                        ArrayList<LocationDTO> locations;
+                        locations = g.fromJson(g.toJson(locationsList), listType);
                         driverLatitude = locations.get(0).getLatitude();
                         driverLongitude = locations.get(0).getLongitude();
                         isSavedLocation = true;
 
                     } else if (userServerResponse.getCode() == 500) {
-                        Toast.makeText(getActivity(), "Server error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                getActivity(),
+                                "Server error",
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Save location failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                            getActivity(),
+                            "Save location failed",
+                            Toast.LENGTH_LONG
+                    ).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
-                Toast.makeText(getActivity(), "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                        getActivity(),
+                        "Throwable " + t.getLocalizedMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
             }
         });
 
@@ -713,7 +697,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         // TODO Auto-generated method stub
                         updateCamera(mMap);
 
-                        Toast.makeText(context, "Location updated successfull", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                context,
+                                "Location updated successfull",
+                                Toast.LENGTH_LONG
+                        ).show();
                         isSavedLocation = false;
                     }
                 });
@@ -722,7 +710,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(context, "Update location failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,
+                                "Update location failed",
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 });
             return null;

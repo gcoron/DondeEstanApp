@@ -91,13 +91,21 @@ public class DriverActivity extends AppCompatActivity {
                                     response.body().getCode(), response.body().getData(),
                                     response.body().getPaginator(), response.body().getStatus());
 
-                    if (userServerResponse.getCode() == 200){
+                    if (userServerResponse.getCode() == 200) {
                         List<ResponseObserverUserDTO> userList = userServerResponse.getData();
                         Gson g = new Gson();
-                        Type listType = new TypeToken<ArrayList<ResponseObserverUserDTO>>(){}.getType();
-                        ArrayList<ResponseObserverUserDTO> userLogin = g.fromJson(g.toJson(userList), listType);
+                        Type listType = new TypeToken<ArrayList<ResponseObserverUserDTO>>() {
+                        }.getType();
+                        ArrayList<ResponseObserverUserDTO> userLogin = g.fromJson(
+                                g.toJson(userList),
+                                listType
+                        );
                         String name = userLogin.get(0).getName();
-                        Toast.makeText(DriverActivity.this, "Get successful", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                DriverActivity.this,
+                                "Get successful",
+                                Toast.LENGTH_LONG
+                        ).show();
 
                         et_name.setEnabled(false);
                         et_lastName.setEnabled(false);
@@ -122,7 +130,7 @@ public class DriverActivity extends AppCompatActivity {
                         }
 
 
-                    } else if (userServerResponse.getCode() == 500){
+                    } else if (userServerResponse.getCode() == 500) {
                         Toast.makeText(DriverActivity.this, "Incorrect fields", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -158,7 +166,7 @@ public class DriverActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean isAllFieldsOk = true;
-                if (btn_create_driver.getText().equals("Crear chofer")){
+                if (btn_create_driver.getText().equals("Crear chofer")) {
 
                     if (!isFilledEditText(et_privacy_key)) {
                         et_privacy_key.getBackground().setColorFilter(Color.RED,
@@ -184,7 +192,7 @@ public class DriverActivity extends AppCompatActivity {
                                                     response.body().getCode(), response.body().getData(),
                                                     response.body().getPaginator(), response.body().getStatus());
 
-                                    if (userServerResponse.getCode() == 200){
+                                    if (userServerResponse.getCode() == 200) {
                                         Toast.makeText(DriverActivity.this, "Chofer creado correctamente", Toast.LENGTH_LONG).show();
                                         Intent intent = new Intent(DriverActivity.this, MainActivity.class);
                                         intent.putExtra("userId", userId);
@@ -192,7 +200,7 @@ public class DriverActivity extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
 
-                                    } else if (userServerResponse.getCode() == 500){
+                                    } else if (userServerResponse.getCode() == 500) {
                                         Toast.makeText(DriverActivity.this, "Incorrect fields", Toast.LENGTH_LONG).show();
                                     }
 
@@ -213,7 +221,7 @@ public class DriverActivity extends AppCompatActivity {
                         });
                     }
 
-                } else if (btn_create_driver.getText().equals("Eliminar")){
+                } else if (btn_create_driver.getText().equals("Eliminar")) {
                     Call<ServerResponse> deleteDriverResponseCall;
 
                     deleteDriverResponseCall = Api.getObserverUserService().setDriverInObserverUser(userId, "user1test1.12345678");
@@ -227,11 +235,11 @@ public class DriverActivity extends AppCompatActivity {
                                                 response.body().getCode(), response.body().getData(),
                                                 response.body().getPaginator(), response.body().getStatus());
 
-                                if (userServerResponse.getCode() == 200){
+                                if (userServerResponse.getCode() == 200) {
                                     unsuscribedTopicNotification();
                                     Toast.makeText(DriverActivity.this, "Chofer eliminado correctamente", Toast.LENGTH_LONG).show();
 
-                                } else if (userServerResponse.getCode() == 500){
+                                } else if (userServerResponse.getCode() == 500) {
                                     Toast.makeText(DriverActivity.this, "Clave de privacidad incorrecta", Toast.LENGTH_LONG).show();
                                 }
                             } else {

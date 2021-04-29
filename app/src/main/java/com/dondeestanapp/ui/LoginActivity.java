@@ -139,11 +139,13 @@ public class LoginActivity extends AppCompatActivity {
                         ArrayList<ResponseLoginRegisterDTO> userLogin = g.fromJson(g.toJson(userList), listType);
                         String userType = userLogin.get(0).getUserType();
                         Integer userId = userLogin.get(0).getUserId();
+                        String privacyKey = userLogin.get(0).getPrivacyKey();
                         saveButtonState();
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("userId", userId);
                         intent.putExtra("userType", userType);
+                        intent.putExtra("privacyKey", privacyKey);
                         startActivity(intent);
                         finish();
 

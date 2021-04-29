@@ -65,12 +65,6 @@ public class MainActivity extends FragmentActivity {
     private Integer userId;
     private String driverPrivacyKey;
     private String userType;
-    /*
-    private String addressLat1;
-    private String addressLon1;
-    private String addressLat2;
-    private String addressLon2;
-    */
 
     private String latitude;
     private String longitude;
@@ -119,11 +113,14 @@ public class MainActivity extends FragmentActivity {
 
         userId = getIntent().getIntExtra("userId", 0);
         userType = getIntent().getStringExtra("userType");
+        driverPrivacyKey = getIntent().getStringExtra("privacyKey");
+
+        if (driverPrivacyKey == null) {
+            driverPrivacyKey = "";
+        }
 
         BottomNavigationView navigation = findViewById(R.id.navigationViewObservee);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //geofencingClient = LocationServices.getGeofencingClient(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(MyFirebaseMessagingService.ACTION_NEW_NOTIFICATION));
@@ -345,11 +342,8 @@ public class MainActivity extends FragmentActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("userId", userId);
         bundle.putString("userType", userType);
-        //bundle.putInt("driverId", driverId);
-        /*bundle.putString("addressLat1", addressLat1);
-        bundle.putString("addressLon1", addressLon1);
-        bundle.putString("addressLat2", addressLat2);
-        bundle.putString("addressLon2", addressLon2);*/
+        bundle.putString("privacyKey", driverPrivacyKey);
+
         fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -362,6 +356,7 @@ public class MainActivity extends FragmentActivity {
         Bundle bundle = new Bundle();
         bundle.putInt("userId", userId);
         bundle.putString("userType", userType);
+        bundle.putString("privacyKey", driverPrivacyKey);
         fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
