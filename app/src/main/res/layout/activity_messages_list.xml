@@ -10,16 +10,7 @@
     tools:context="com.dondeestanapp.ui.MessagesListActivity"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_messages"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/holo_orange_light"
-        android:elevation="4dp"
-        app:title="Chat"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:ignore="MissingConstraints" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,13 +21,15 @@
             android:id="@+id/profile_picture"
             android:layout_width="48sp"
             android:layout_height="48sp"
-            android:src="@drawable/ic_drive" />
+            android:layout_gravity="center"
+            android:src="@drawable/ic_message" />
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Chofer"/>
+            android:text="Chat"
+            android:textSize="32dp"/>
 
     </LinearLayout>
     

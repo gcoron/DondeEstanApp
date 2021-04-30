@@ -30,6 +30,8 @@ public class MessagesListActivity extends AppCompatActivity {
     private Integer userId;
     private String userType;
     private String driverPrivacyKey;
+    private String name;
+    private String lastName;
 
     private CircleImageView profilePicture;
     private TextView tv_name;
@@ -50,6 +52,8 @@ public class MessagesListActivity extends AppCompatActivity {
         userId = getIntent().getIntExtra("userId", 0);
         userType = getIntent().getStringExtra("userType");
         driverPrivacyKey = getIntent().getStringExtra("privacyKey");
+        name = getIntent().getStringExtra("name");
+        lastName = getIntent().getStringExtra("lastName");
 
         if (driverPrivacyKey.equals("") || driverPrivacyKey == null) {
             et_message.setEnabled(false);
@@ -78,9 +82,14 @@ public class MessagesListActivity extends AppCompatActivity {
                     SimpleDateFormat simpleDateFormat;
                     simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     String currentDateandTime = simpleDateFormat.format(new Date());
+
+                    String nick = name + " " + lastName;
+                    if (userType.equals("observee")) {
+                        nick = nick + " - CHOFER";
+                    }
                     databaseReference.push().setValue(new MessageChat(
                                     et_message.getText().toString(),
-                                    tv_name.getText().toString(),
+                                    nick,
                                     "",
                                     currentDateandTime
                             )

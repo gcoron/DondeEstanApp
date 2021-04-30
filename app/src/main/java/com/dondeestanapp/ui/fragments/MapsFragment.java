@@ -100,6 +100,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private Integer userId;
     private Integer driverId;
     private String driverPrivacyKey;
+    private String name;
+    private String lastName;
+    private String numberId;
     private String userType;
     private String driverLatitude;
     private String driverLongitude;
@@ -152,6 +155,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         userId = getArguments().getInt("userId");
         userType = getArguments().getString("userType");
         driverPrivacyKey = getArguments().getString("privacyKey");
+        name = getArguments().getString("name");
+        lastName = getArguments().getString("lastName");
+        numberId = getArguments().getString("numberId");
 
         if (driverPrivacyKey == null) {
             driverPrivacyKey = "";
@@ -205,6 +211,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 intent.putExtra("userId", userId);
                 intent.putExtra("userType", userType);
                 intent.putExtra("privacyKey", driverPrivacyKey);
+                intent.putExtra("name", name);
+                intent.putExtra("lastName", lastName);
                 startActivity(intent);
             }
         });
@@ -289,6 +297,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                         listType
                                 );
 
+                        name = observerUserDTO.get(0).getName();
+                        lastName = observerUserDTO.get(0).getLastName();
+                        numberId = observerUserDTO.get(0).getNumberId();
                         driverId = observerUserDTO.get(0).getUserObserveeId();
                         driverPrivacyKey = observerUserDTO.get(0).getUserObserveePrivacyKey();
                         addressDTOList = observerUserDTO.get(0).getAddresses();

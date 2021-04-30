@@ -65,6 +65,9 @@ public class MainActivity extends FragmentActivity {
     private Integer userId;
     private String driverPrivacyKey;
     private String userType;
+    private String name;
+    private String lastName;
+    private String numberId;
 
     private String latitude;
     private String longitude;
@@ -82,8 +85,7 @@ public class MainActivity extends FragmentActivity {
             try {
                 new InsertLocation(MainActivity.this).execute();
                 handler.postDelayed(runnable, 30000);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -114,6 +116,9 @@ public class MainActivity extends FragmentActivity {
         userId = getIntent().getIntExtra("userId", 0);
         userType = getIntent().getStringExtra("userType");
         driverPrivacyKey = getIntent().getStringExtra("privacyKey");
+        name = getIntent().getStringExtra("name");
+        lastName = getIntent().getStringExtra("lastName");
+        numberId = getIntent().getStringExtra("numberId");
 
         if (driverPrivacyKey == null) {
             driverPrivacyKey = "";
@@ -133,18 +138,18 @@ public class MainActivity extends FragmentActivity {
             if (ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    ActivityCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
             ) {
 
                 ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
-                    1000);
+                        this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
+                        1000);
             } else {
                 locationStart();
             }
@@ -153,7 +158,7 @@ public class MainActivity extends FragmentActivity {
 
 
     //Insertamos los datos a nuestra webService
-    private boolean insertLocation(){
+    private boolean insertLocation() {
 
         Call<ServerResponse> locationSaveResponseCall;
 
@@ -169,10 +174,10 @@ public class MainActivity extends FragmentActivity {
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.isSuccessful()) {
                     ServerResponse<LocationDTO> userServerResponse = new ServerResponse<LocationDTO>(response.body().getCode(), response.body().getData(), response.body().getPaginator(), response.body().getStatus());
-                    if (userServerResponse.getCode() == 200){
+                    if (userServerResponse.getCode() == 200) {
                         isSavedLocation = true;
 
-                    } else if (userServerResponse.getCode() == 500){
+                    } else if (userServerResponse.getCode() == 500) {
                         Toast.makeText(MainActivity.this, "Server error", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -190,18 +195,18 @@ public class MainActivity extends FragmentActivity {
     }
 
     //AsyncTask para insertar Datos
-    class InsertLocation extends AsyncTask<String,String,String> {
+    class InsertLocation extends AsyncTask<String, String, String> {
 
         private Activity context;
 
-        InsertLocation(Activity context){
-            this.context=context;
+        InsertLocation(Activity context) {
+            this.context = context;
         }
 
         protected String doInBackground(String... params) {
             // TODO Auto-generated method stub
-            if(insertLocation())
-                context.runOnUiThread(new Runnable(){
+            if (insertLocation())
+                context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
@@ -210,7 +215,7 @@ public class MainActivity extends FragmentActivity {
                     }
                 });
             else
-                context.runOnUiThread(new Runnable(){
+                context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
@@ -231,19 +236,40 @@ public class MainActivity extends FragmentActivity {
             Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(settingsIntent);
         }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
+                    1000);
             return;
         }
-        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) Local);
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
+        mlocManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                0,
+                0,
+                (LocationListener) Local
+        );
+        mlocManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                0,
+                0,
+                (LocationListener) Local
+        );
 
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
         if (requestCode == 3000) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 locationStart();
@@ -313,7 +339,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -343,6 +368,9 @@ public class MainActivity extends FragmentActivity {
         bundle.putInt("userId", userId);
         bundle.putString("userType", userType);
         bundle.putString("privacyKey", driverPrivacyKey);
+        bundle.putString("name", driverPrivacyKey);
+        bundle.putString("lastName", driverPrivacyKey);
+        bundle.putString("numberId", driverPrivacyKey);
 
         fragment.setArguments(bundle);
 
@@ -357,6 +385,9 @@ public class MainActivity extends FragmentActivity {
         bundle.putInt("userId", userId);
         bundle.putString("userType", userType);
         bundle.putString("privacyKey", driverPrivacyKey);
+        bundle.putString("name", name);
+        bundle.putString("lastName", lastName);
+        bundle.putString("numberId", numberId);
         fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -374,11 +405,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        if (firstClickTime + INTERVAL > System.currentTimeMillis()){
+    public void onBackPressed() {
+        if (firstClickTime + INTERVAL > System.currentTimeMillis()) {
             super.onBackPressed();
             finishAffinity();
-        }else {
+        } else {
             Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
         }
         firstClickTime = System.currentTimeMillis();

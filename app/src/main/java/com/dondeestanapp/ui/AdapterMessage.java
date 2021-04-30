@@ -43,6 +43,12 @@ public class AdapterMessage extends RecyclerView.Adapter<HolderMessage> {
         holder.getName().setText(messageList.get(position).getName());
         holder.getMessage().setText(messageList.get(position).getMessage());
         holder.getHour().setText(messageList.get(position).getHour());
+
+        if (messageList.get(position).getName().contains("- CHOFER")) {
+            holder.getProfile_picture_message().setImageResource(R.mipmap.ic_school_bus);
+        } else {
+            holder.getProfile_picture_message().setImageResource(R.mipmap.ic_person);
+        }
     }
 
     @Override
