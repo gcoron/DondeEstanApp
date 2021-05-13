@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -574,14 +575,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             notification_btn.setClickable(true);
             if (userType.equals("observer")) {
                 driver_btn.setClickable(true);
-                address_btn.setClickable(true);
+                //address_btn.setClickable(true);
             }
         } else {
             message_btn.setClickable(false);
             notification_btn.setClickable(false);
             if (userType.equals("observer")) {
                 driver_btn.setClickable(false);
-                address_btn.setClickable(false);
+                //address_btn.setClickable(false);
             }
         }
     }
@@ -593,7 +594,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             notification_btn.setVisibility(View.VISIBLE);
             if (userType.equals("observer")) {
                 driver_btn.setVisibility(View.VISIBLE);
-                address_btn.setVisibility(View.VISIBLE);
+                //address_btn.setVisibility(View.VISIBLE);
             }
         } else {
             message_btn.setVisibility(View.INVISIBLE);
@@ -612,7 +613,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             add_btn.startAnimation(rotateOpen);
             if (userType.equals("observer")) {
                 driver_btn.startAnimation(fromBottom);
-                address_btn.startAnimation(fromBottom);
+                //address_btn.startAnimation(fromBottom);
             }
         } else {
             message_btn.startAnimation(toBottom);
@@ -620,7 +621,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             add_btn.startAnimation(rotateClose);
             if (userType.equals("observer")) {
                 driver_btn.startAnimation(toBottom);
-                address_btn.startAnimation(toBottom);
+                //address_btn.startAnimation(toBottom);
             }
         }
     }

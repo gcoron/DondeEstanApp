@@ -119,6 +119,7 @@ public class MainActivity extends FragmentActivity {
         name = getIntent().getStringExtra("name");
         lastName = getIntent().getStringExtra("lastName");
         numberId = getIntent().getStringExtra("numberId");
+        userType = "observee";
 
         if (driverPrivacyKey == null) {
             driverPrivacyKey = "";

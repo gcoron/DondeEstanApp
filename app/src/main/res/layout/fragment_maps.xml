@@ -73,7 +73,7 @@
         app:backgroundTint="@color/colorSecondary"
         app:layout_constraintBottom_toTopOf="@+id/floating_action_button_message"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_notifications"
+        app:srcCompat="@drawable/ic_address"
         tools:ignore="ContentDescription,MissingConstraints,VectorDrawableCompat" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

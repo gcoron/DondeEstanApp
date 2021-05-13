@@ -21,8 +21,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String title = "";
             String description = "";
             Log.d(TAG, "From: " + remoteMessage.getFrom());
-            title = remoteMessage.getNotification().getTitle();
-            description = remoteMessage.getNotification().getBody();
 
             if (remoteMessage.getNotification() != null) {
                 title = remoteMessage.getNotification().getTitle();

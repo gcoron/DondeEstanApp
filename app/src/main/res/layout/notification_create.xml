@@ -42,22 +42,14 @@
         tools:layout_editor_absoluteX="1dp"
         tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:autoSizeMaxTextSize="20sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Título: " />
-
         <EditText
             android:id="@+id/et_title_create_notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:ems="10"
+            android:hint="Título"
             android:inputType="textPersonName" />
     </LinearLayout>
 
@@ -70,22 +62,14 @@
         tools:layout_editor_absoluteX="1dp"
         tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:autoSizeMaxTextSize="20sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Descripción: " />
-
         <EditText
             android:id="@+id/et_description_create_notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:ems="10"
+            android:hint="Descripción"
             android:inputType="textPersonName" />
     </LinearLayout>
 
