@@ -1,36 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_app" />
-
-    <TextView
-        android:id="@+id/textView1"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_create_driver"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:autoSizeMaxTextSize="100sp"
-        android:autoSizeMinTextSize="16sp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-        android:gravity="center"
-        android:text="Complete los siguientes campos:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/holo_orange_light"
+        android:elevation="4dp"
+        app:title="Registro de Chofer"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints" />
 
     <LinearLayout
         android:id="@+id/linearlayout1"
@@ -38,26 +23,18 @@
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/textView1"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Nombre: " />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_create_driver"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
             android:id="@+id/et_driver_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:ems="10"
+            android:hint="Nombre"
             android:inputType="textPersonName" />
     </LinearLayout>
 
@@ -67,25 +44,17 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout1"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Apellido: " />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
             android:id="@+id/et_driver_surname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:ems="10"
+            android:hint="Apellido"
             android:inputType="textPersonName" />
     </LinearLayout>
 
@@ -95,82 +64,18 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout2"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textViewdni"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Dni: " />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
             android:id="@+id/et_driver_numberId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Dni"
             android:ems="10"
             android:inputType="number" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearlayout5"
-        android:layout_width="407dp"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayoutdni"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Email: " />
-
-        <EditText
-            android:id="@+id/et_driver_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearlayout3"
-        android:layout_width="407dp"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout5"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Usuario: " />
-
-        <EditText
-            android:id="@+id/et_driver_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
     </LinearLayout>
 
     <LinearLayout
@@ -178,25 +83,37 @@
         android:layout_width="407dp"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout3"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Contraseña: " />
+        app:layout_constraintTop_toBottomOf="@+id/linearlayoutdni"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
-            android:id="@+id/et_driver_password"
+            android:id="@+id/et_driver_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Email"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout5"
+        android:layout_width="407dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout4"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
+
+        <EditText
+            android:id="@+id/et_driver_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Usuario"
             android:ems="10"
             android:inputType="textPersonName" />
     </LinearLayout>
@@ -206,25 +123,17 @@
         android:layout_width="407dp"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout4"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Empresa: " />
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout5"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
-            android:id="@+id/et_driver_company_name"
+            android:id="@+id/et_driver_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Contraseña"
             android:ems="10"
             android:inputType="textPersonName" />
     </LinearLayout>
@@ -235,24 +144,16 @@
         android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout6"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Patente: " />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
-            android:id="@+id/et_driver_licensePlate"
+            android:id="@+id/et_driver_repeat_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Repita contraseña"
             android:ems="10"
             android:inputType="textPersonName" />
     </LinearLayout>
@@ -260,27 +161,59 @@
     <LinearLayout
         android:id="@+id/linearlayout8"
         android:layout_width="407dp"
-        android:layout_height="69dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearlayout7"
-        tools:layout_editor_absoluteX="1dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="110dp"
+        <EditText
+            android:id="@+id/et_driver_company_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autoSizeMaxTextSize="100sp"
-            android:autoSizeMinTextSize="16sp"
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="right"
-            android:text="Matricula: " />
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Empresa"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout9"
+        android:layout_width="407dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout8"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
+
+        <EditText
+            android:id="@+id/et_driver_licensePlate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Patente"
+            android:ems="10"
+            android:inputType="textPersonName" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout10"
+        android:layout_width="407dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout9"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp">
 
         <EditText
             android:id="@+id/et_driver_carRegistration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:hint="Matrícula"
             android:ems="10"
             android:inputType="textPersonName" />
     </LinearLayout>
@@ -292,9 +225,9 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/button_rounded_border"
         android:text="Cancelar"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout8"
         app:layout_constraintEnd_toStartOf="@+id/btn_create_account_user_observee"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout10"
         tools:layout_editor_absoluteY="727dp" />
 
     <Button
@@ -302,10 +235,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_rounded"
-        android:text="Crear cuenta"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayout8"
+        android:text="Registrar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_cancel_user_observee"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout10"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="727dp" />
 

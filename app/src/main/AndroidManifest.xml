@@ -50,9 +50,6 @@
             android:name=".ui.MessagesListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.NotificationsListActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.UserTypeActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -67,6 +64,7 @@
         <activity
             android:name=".ui.AddressActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.AddressListActivity"
             android:screenOrientation="portrait" />

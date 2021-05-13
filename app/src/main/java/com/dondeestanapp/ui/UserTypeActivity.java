@@ -27,6 +27,7 @@ public class UserTypeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(UserTypeActivity.this, CreateUserObserveeActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -35,6 +36,7 @@ public class UserTypeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(UserTypeActivity.this, CreateObserverUserActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
