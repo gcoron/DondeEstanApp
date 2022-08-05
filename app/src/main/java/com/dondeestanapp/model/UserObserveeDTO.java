@@ -1,17 +1,25 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
-import com.dondeestanapp.api.ObserverUserService;
+public class UserObserveeDTO {
 
-import retrofit2.Call;
-
-public class ResponseObserverUserDTO implements ObserverUserService {
-
+    private int userId;
     private String name;
     private String lastName;
-    private String privacyKey;
+    private String numberId;
+    private String email;
+    private String username;
+    private String password;
     private String companyName;
     private String licensePlate;
     private String carRegistration;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public String getName() {
         return name;
@@ -29,12 +37,36 @@ public class ResponseObserverUserDTO implements ObserverUserService {
         this.lastName = lastName;
     }
 
-    public String getPrivacyKey() {
-        return privacyKey;
+    public String getNumberId() {
+        return numberId;
     }
 
-    public void setPrivacyKey(String privacyKey) {
-        this.privacyKey = privacyKey;
+    public void setNumberId(String numberId) {
+        this.numberId = numberId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getCompanyName() {
@@ -59,25 +91,5 @@ public class ResponseObserverUserDTO implements ObserverUserService {
 
     public void setCarRegistration(String carRegistration) {
         this.carRegistration = carRegistration;
-    }
-
-    @Override
-    public Call<ServerResponse> getDriverById(Integer userId) {
-        return null;
-    }
-
-    @Override
-    public Call<ServerResponse> setDriverInObserverUser(int userIdObserverUser, String userObserveePrivacyKey) {
-        return null;
-    }
-
-    @Override
-    public Call<ServerResponse> getLastLocationByObserverUserId(Integer userId) {
-        return null;
-    }
-
-    @Override
-    public Call<ServerResponse> setInitDataOfObserverUser(Integer userId) {
-        return null;
     }
 }

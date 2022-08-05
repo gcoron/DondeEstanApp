@@ -1,4 +1,4 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
 import android.view.View;
 import android.widget.TextView;

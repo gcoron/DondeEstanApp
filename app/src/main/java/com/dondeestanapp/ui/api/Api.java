@@ -1,4 +1,4 @@
-package com.dondeestanapp.api;
+package com.dondeestanapp.ui.api;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -16,7 +16,7 @@ public class Api {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://dondeestanws-env.eba-ynzfsmgd.sa-east-1.elasticbeanstalk.com/")
+                .baseUrl("http://dondeestanws-env-1.eba-x3puagup.us-east-2.elasticbeanstalk.com/")
                 .client(okHttpClient)
                 .build();
 

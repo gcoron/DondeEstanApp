@@ -15,9 +15,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseAddressDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.ResponseAddressDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;

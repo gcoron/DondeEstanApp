@@ -1,6 +1,6 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
-import com.dondeestanapp.api.LoginRegisterService;
+import com.dondeestanapp.ui.api.LoginRegisterService;
 
 import retrofit2.Call;
 

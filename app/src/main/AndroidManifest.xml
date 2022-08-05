@@ -47,7 +47,7 @@
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.MessagesListActivity"
+            android:name=".ui.MessagesActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.UserTypeActivity"
@@ -76,7 +76,7 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".ui.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

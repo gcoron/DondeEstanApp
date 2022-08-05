@@ -28,29 +28,17 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.dondeestanapp.MyFirebaseMessagingService;
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.LocationDTO;
-import com.dondeestanapp.api.model.ObserverUserDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.LocationDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.dondeestanapp.ui.fragments.AccountFragment;
 import com.dondeestanapp.ui.fragments.InformationFragment;
 import com.dondeestanapp.ui.fragments.MapsFragment;
-import com.google.android.gms.location.GeofencingClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,7 +107,7 @@ public class MainActivity extends FragmentActivity {
         name = getIntent().getStringExtra("name");
         lastName = getIntent().getStringExtra("lastName");
         numberId = getIntent().getStringExtra("numberId");
-        userType = "observee";
+        //userType = "observee";
 
         if (driverPrivacyKey == null) {
             driverPrivacyKey = "";
@@ -182,7 +170,7 @@ public class MainActivity extends FragmentActivity {
                         Toast.makeText(MainActivity.this, "Server error", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Save location failed", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MainActivity.this, "Save location failed", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -211,7 +199,7 @@ public class MainActivity extends FragmentActivity {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(context, "Location saved successfull", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(context, "Location saved successfull", Toast.LENGTH_LONG).show();
                         isSavedLocation = false;
                     }
                 });
@@ -220,14 +208,14 @@ public class MainActivity extends FragmentActivity {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(context, "Save location failed", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(context, "Save location failed", Toast.LENGTH_LONG).show();
                     }
                 });
             return null;
         }
     }
 
-    //Apartir de aqui empezamos a obtener la direciones y coordenadas
+    //Apartir de aqui empezamos a obtener las direciones y coordenadas
     private void locationStart() {
         LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Localizacion Local = new Localizacion();
@@ -271,6 +259,7 @@ public class MainActivity extends FragmentActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions,
                                            int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 3000) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 locationStart();

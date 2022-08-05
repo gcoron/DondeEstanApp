@@ -10,9 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.ResponseLoginRegisterDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,7 +25,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CreateUserObserveeActivity extends AppCompatActivity {
-
 
     EditText et_driver_name;
     EditText et_driver_lastName;
@@ -112,7 +111,7 @@ public class CreateUserObserveeActivity extends AppCompatActivity {
                         finish();
 
                     } else if (userServerResponse.getCode() == 500){
-                        Toast.makeText(CreateUserObserveeActivity.this, "Incorrect fields", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateUserObserveeActivity.this, "Username already exists", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(CreateUserObserveeActivity.this, "Register failed", Toast.LENGTH_LONG).show();

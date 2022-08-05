@@ -9,9 +9,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.NotificationDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.NotificationDTO;
+import com.dondeestanapp.model.ServerResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -85,16 +85,10 @@ public class CreateNotification extends AppCompatActivity {
                         onBackPressed();
 
                     } else if (userServerResponse.getCode() == 500){
-                        Toast.makeText(
-                                CreateNotification.this,
-                                "Notification failed. Server error",
-                                Toast.LENGTH_LONG).show();
+                        //Toast.makeText(CreateNotification.this, "Notification failed. Server error", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(
-                            CreateNotification.this,
-                            "Notification failed",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(CreateNotification.this, "Notification failed", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -108,5 +102,13 @@ public class CreateNotification extends AppCompatActivity {
             }
         });
 
+
+        Toast.makeText(
+                CreateNotification.this,
+                "Notification sent",
+                Toast.LENGTH_SHORT
+        ).show();
+        et_title.setText("");
+        et_description.setText("");
     }
 }

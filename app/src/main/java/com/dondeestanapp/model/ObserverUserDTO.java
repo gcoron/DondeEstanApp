@@ -1,4 +1,4 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
 import java.util.List;
 

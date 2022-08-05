@@ -10,9 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.ResponseLoginRegisterDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
