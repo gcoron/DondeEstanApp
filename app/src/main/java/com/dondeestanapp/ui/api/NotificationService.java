@@ -1,6 +1,6 @@
-package com.dondeestanapp.api;
+package com.dondeestanapp.ui.api;
 
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.model.ServerResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,4 +1,4 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
 public class Address {
 

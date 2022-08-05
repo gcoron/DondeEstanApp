@@ -1,4 +1,4 @@
-package com.dondeestanapp;
+package com.dondeestanapp.ui;
 
 import android.content.Intent;
 import android.util.Log;

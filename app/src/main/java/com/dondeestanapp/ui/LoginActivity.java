@@ -13,9 +13,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseLoginRegisterDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.ResponseLoginRegisterDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -123,7 +123,8 @@ public class LoginActivity extends AppCompatActivity {
         if (state) {
             loginResponseCall = Api.getUserService().userLogin(user, pass);
         } else {
-            loginResponseCall = Api.getUserService().userLogin(et_username.getText().toString().toLowerCase().trim(), et_password.getText().toString().toLowerCase().trim());
+            loginResponseCall = Api.getUserService().userLogin(et_username.getText().toString().toLowerCase().trim(),
+                    et_password.getText().toString().toLowerCase().trim());
         }
         loginResponseCall.enqueue(new Callback<ServerResponse>() {
             @Override
@@ -165,7 +166,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Throwable " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this,
+                        "Throwable " + t.getLocalizedMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
 
@@ -176,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
         if (firstClickTime + INTERVAL > System.currentTimeMillis()){
             super.onBackPressed();
             finishAffinity();
-        }else {
+        } else {
             Toast.makeText(this, "Vuelve a presionar para salir", Toast.LENGTH_SHORT).show();
         }
         firstClickTime = System.currentTimeMillis();

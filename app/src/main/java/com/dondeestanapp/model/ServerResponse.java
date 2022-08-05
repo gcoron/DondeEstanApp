@@ -1,4 +1,4 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

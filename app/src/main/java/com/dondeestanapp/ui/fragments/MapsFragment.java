@@ -14,7 +14,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -30,18 +29,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.Address;
-import com.dondeestanapp.api.model.LocationDTO;
-import com.dondeestanapp.api.model.NotificationDTO;
-import com.dondeestanapp.api.model.ObserverUserDTO;
-import com.dondeestanapp.api.model.ResponseAddressDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.Address;
+import com.dondeestanapp.model.LocationDTO;
+import com.dondeestanapp.model.NotificationDTO;
+import com.dondeestanapp.model.ObserverUserDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.dondeestanapp.ui.AddressActivity;
 import com.dondeestanapp.ui.AddressListActivity;
 import com.dondeestanapp.ui.CreateNotification;
 import com.dondeestanapp.ui.DriverActivity;
-import com.dondeestanapp.ui.MessagesListActivity;
+import com.dondeestanapp.ui.MessagesActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -140,6 +138,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         if (getActivity() != null) {
             SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
                     .findFragmentById(R.id.map);
+
             if (mapFragment != null) {
                 mapFragment.getMapAsync(this);
             }
@@ -164,9 +163,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             driverPrivacyKey = "";
         }
 
+        driverPrivacyKey = "gcoronel.36000111";
+
         if (userType.equals("observer")) {
             setDataDriver();
-            //setAddresses();
         }
 
         myLocation_btn = mapsView.findViewById(R.id.floating_action_button_my_location);
@@ -174,7 +174,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         message_btn = mapsView.findViewById(R.id.floating_action_button_message);
         notification_btn = mapsView.findViewById(R.id.floating_action_button_notification);
         driver_btn = mapsView.findViewById(R.id.floating_action_button_driver);
-        address_btn = mapsView.findViewById(R.id.floating_action_button_address);
+        address_btn = mapsView.findViewById(R.id.floating_action_button_notification);//floating_action_button_address);
 
         rotateOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_open_anim);
         rotateClose = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_close_anim);
@@ -208,7 +208,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         message_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MessagesListActivity.class);
+                Intent intent = new Intent(getActivity(), MessagesActivity.class);
                 intent.putExtra("userId", userId);
                 intent.putExtra("userType", userType);
                 intent.putExtra("privacyKey", driverPrivacyKey);
@@ -310,7 +310,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         Toast.makeText(getActivity(), "Server error", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Save location failed", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), "Save location failed", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -331,7 +331,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             msg = getString(R.string.msg_subscribe_failed);
                         }
                         Log.d(TAGTOPIC, msg);
-                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -575,14 +575,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             notification_btn.setClickable(true);
             if (userType.equals("observer")) {
                 driver_btn.setClickable(true);
-                //address_btn.setClickable(true);
+                address_btn.setClickable(true);
             }
         } else {
             message_btn.setClickable(false);
             notification_btn.setClickable(false);
             if (userType.equals("observer")) {
                 driver_btn.setClickable(false);
-                //address_btn.setClickable(false);
+                address_btn.setClickable(false);
             }
         }
     }
@@ -601,7 +601,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             notification_btn.setVisibility(View.INVISIBLE);
             if (userType.equals("observer")) {
                 driver_btn.setVisibility(View.INVISIBLE);
-                address_btn.setVisibility(View.INVISIBLE);
+                //address_btn.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -633,7 +633,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    //Insertamos los datos a nuestra webService
+    //ualizamos la ubicación del chofer
     private boolean updateLocation() {
 
         Call<ServerResponse> locationUpdateResponseCall;
@@ -670,11 +670,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         ).show();
                     }
                 } else {
-                    Toast.makeText(
-                            getActivity(),
-                            "Save location failed",
-                            Toast.LENGTH_LONG
-                    ).show();
+                    //Toast.makeText(getActivity(),"Save location failed",Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -709,11 +705,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         // TODO Auto-generated method stub
                         updateCamera(mMap);
 
-                        Toast.makeText(
-                                context,
-                                "Location updated successfull",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        //Toast.makeText(context, "Location updated successfull", Toast.LENGTH_LONG).show();
                         isSavedLocation = false;
                     }
                 });
@@ -722,10 +714,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(context,
-                                "Update location failed",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        //Toast.makeText(context, "Update location failed", Toast.LENGTH_LONG).show();
                     }
                 });
             return null;

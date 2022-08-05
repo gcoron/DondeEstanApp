@@ -17,9 +17,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.Api;
-import com.dondeestanapp.api.model.ResponseObserverUserDTO;
-import com.dondeestanapp.api.model.ServerResponse;
+import com.dondeestanapp.ui.api.Api;
+import com.dondeestanapp.model.ResponseObserverUserDTO;
+import com.dondeestanapp.model.ServerResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -101,11 +101,7 @@ public class DriverActivity extends AppCompatActivity {
                                 listType
                         );
                         String name = userLogin.get(0).getName();
-                        Toast.makeText(
-                                DriverActivity.this,
-                                "Get successful",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        //Toast.makeText(DriverActivity.this, "Get successful", Toast.LENGTH_LONG).show();
 
                         et_name.setEnabled(false);
                         et_lastName.setEnabled(false);
@@ -135,7 +131,7 @@ public class DriverActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(DriverActivity.this, "Register failed", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(DriverActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(DriverActivity.this, MainActivity.class);
                     intent.putExtra("userId", userId);
                     intent.putExtra("userType", userType);
                     startActivity(intent);
@@ -166,7 +162,7 @@ public class DriverActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean isAllFieldsOk = true;
-                if (btn_create_driver.getText().equals("Crear chofer")) {
+                if (btn_create_driver.getText().equals("Crear")) {
 
                     if (!isFilledEditText(et_privacy_key)) {
                         et_privacy_key.getBackground().setColorFilter(Color.RED,
@@ -201,7 +197,7 @@ public class DriverActivity extends AppCompatActivity {
                                         finish();
 
                                     } else if (userServerResponse.getCode() == 500) {
-                                        Toast.makeText(DriverActivity.this, "Incorrect fields", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(DriverActivity.this, "Clave de privacidad incorrecta", Toast.LENGTH_LONG).show();
                                     }
 
                                 } else {

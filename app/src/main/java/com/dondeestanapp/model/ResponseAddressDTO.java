@@ -1,6 +1,6 @@
-package com.dondeestanapp.api.model;
+package com.dondeestanapp.model;
 
-import com.dondeestanapp.api.AddressService;
+import com.dondeestanapp.ui.api.AddressService;
 
 import java.io.Serializable;
 

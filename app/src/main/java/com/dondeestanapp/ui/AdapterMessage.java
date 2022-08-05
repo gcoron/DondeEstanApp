@@ -9,8 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dondeestanapp.R;
-import com.dondeestanapp.api.model.HolderMessage;
-import com.dondeestanapp.api.model.MessageChat;
+import com.dondeestanapp.model.HolderMessage;
+import com.dondeestanapp.model.MessageChat;
 
 import java.util.ArrayList;
 import java.util.List;
